@@ -31,65 +31,21 @@ THE SOFTWARE.
 #include "defines.h"
 
 
-//************************************PIDS****************************************
+//**************************************************PIDS*************************************************
+//*******************************************************************************************************
 
-//7mm Whoop  NotFastEnuf "High and Tight Pids" -kalman gyro at 90hz, D 2nd at 100hz, motor filter at 90hz
-//                         ROLL       PITCH     YAW
-//float pidkp[PIDNUMBER] = { 27.0e-2 , 27.0e-2  , 11.5e-1 }; 
-//float pidki[PIDNUMBER] = { 20.5e-1  , 20.5e-1 , 16e-1 };	
-//float pidkd[PIDNUMBER] = { 11.4e-1 , 11.4e-1  , 4.9e-1 };	
-
-//7mm Whoop  NotFastEnuf "Default Pids" -kalman gyro at 90hz, D 2nd at 100hz, motor filter at 90hz
-//      	                 ROLL       PITCH     YAW
-float pidkp[PIDNUMBER] = { 26.5e-2 , 26.5e-2  , 8.5e-1 }; 
-float pidki[PIDNUMBER] = { 16e-1  , 16e-1 , 13e-1 };	
-float pidkd[PIDNUMBER] = {11.1e-1 , 11.1e-1  , 4.9e-1 };
-
-//6mm Whoop -kalman gyro at 90hz, D 2nd at 100hz, motor filter at 90hz
-//                         ROLL       PITCH     YAW
-//float pidkp[PIDNUMBER] = {19.5e-2 , 19.5e-2  , 7.5e-1 }; 
-//float pidki[PIDNUMBER] = { 14e-1  , 15e-1 , 13e-1 };	
-//float pidkd[PIDNUMBER] = { 6.9e-1 , 6.9e-1  , 5.5e-1 };
-
-//BOSS 6 & 7 - 615 and 716 motors, hm830 46mm props  -1st gyro at 70hz, D 2nd at 80hz, motor filter at 70hz
-//                         ROLL       PITCH     YAW
-//float pidkp[PIDNUMBER] = { 24.5e-2 , 24.5e-2  , 9.5e-1 }; 
-//float pidki[PIDNUMBER] = { 12e-1  , 12e-1 , 8e-1 };	
-//float pidkd[PIDNUMBER] = {14.1e-1 , 14.1e-1  , 7e-1 };
-
-//(EXPERIMENTAL) BOSS 7 with TORQUE_BOOST at 2.0 - same gyro & d filters as regular boss 7 tune
-//                         ROLL       PITCH     YAW
-//float pidkp[PIDNUMBER] = { 22.7e-2 , 22.7e-2  , 9.5e-1 }; 
-//float pidki[PIDNUMBER] = { 12e-1  , 12e-1 , 8e-1 };	
-//float pidkd[PIDNUMBER] = {8.7e-1 , 8.7e-1  , 0e-1 };	
-
-//BOSS 8.0 - 816 motors, kingkong 66mm props  -kalman gyro at 90hz, D 2nd at 100hz, motor filter at 90hz
-//                         ROLL       PITCH     YAW
-//float pidkp[PIDNUMBER] = { 26.7e-2 , 26.7e-2  , 9.5e-1 }; 
-//float pidki[PIDNUMBER] = { 12e-1  , 12e-1 , 8e-1 };	
-//float pidkd[PIDNUMBER] = {16.2e-1 , 16.2e-1  , 7e-1 };	
-
-//BOSS 8.5 - 820 motors, kingkong 66mm props  -kalman at 80hz, D 2nd at 90hz, motor filter at 90hz
-//                         ROLL       PITCH     YAW
-//float pidkp[PIDNUMBER] = { 29.5e-2 , 29.5e-2  , 11.5e-1 }; 
-//float pidki[PIDNUMBER] = { 12e-1  , 12e-1 , 12.0e-1 };	
-//float pidkd[PIDNUMBER] = {17.5e-1 , 17.5e-1  , 7e-1 };
-
-
-//************************************Setpoint Weight****************************************
+//*********************************************Setpoint Weight*******************************************
 // "setpoint weighting" 0.0 - 1.0 where 1.0 = normal pid
 #define ENABLE_SETPOINT_WEIGHTING
 //            Roll   Pitch   Yaw
-float b[3] = { 0.93 , 0.95 , 0.9};
-
-
+float b[3] = { 1.0 , 1.0 , 1.0};
 
 
 /// output limit			
-const float outlimit[PIDNUMBER] = { 1.7 , 1.7 , 0.5 };
+const float outlimit[PIDNUMBER] = { 0.8 , 0.8 , 0.5 };
 
 // limit of integral term (abs)
-const float integrallimit[PIDNUMBER] = { 1.7 , 1.7 , 0.5 };
+const float integrallimit[PIDNUMBER] = { 0.8 , 0.8 , 0.5 };
 
 //#define RECTANGULAR_RULE_INTEGRAL
 //#define MIDPOINT_RULE_INTEGRAL
@@ -97,12 +53,43 @@ const float integrallimit[PIDNUMBER] = { 1.7 , 1.7 , 0.5 };
 
 //#define ANTI_WINDUP_DISABLE
 
+
+//*******************************************DO NOT CHANGE************************************************
 // non changable things below
-float * pids_array[3] = {pidkp, pidki, pidkd};
+
+// multiplier for pids at 3V - for PID_VOLTAGE_COMPENSATION - default 1.33f
+#define PID_VC_FACTOR 1.33f
+
+// --------------------------- DUAL PIDS CODE -----------------
+//
+// first PID set (do not change)
+//
+float pidkp1[PIDNUMBER] = PIDKP1;
+float pidki1[PIDNUMBER] = PIDKI1;	
+float pidkd1[PIDNUMBER] = PIDKD1;	
+
+//
+// second PID set (do not change)
+//
+float pidkp2[PIDNUMBER] = PIDKP2;
+float pidki2[PIDNUMBER] = PIDKI2;	
+float pidkd2[PIDNUMBER] = PIDKD2;	
+
+
+// working arrays - do not change
+float pidkp[PIDNUMBER] = { 0 , 0 , 0 }; 
+float pidki[PIDNUMBER] = { 0 , 0 , 0 };	
+float pidkd[PIDNUMBER] = { 0 , 0 , 0 };	
+
+//float * pids_array[3] = {pidkp, pidki, pidkd}; //disabled for dual PIDs code
+float * pids_array[3] = {pidkp1, pidki1, pidkd1};	//dual PIDs code (original array filled with PID set1)
+float * pids_array2[3] = {pidkp2, pidki2, pidkd2}; //dual PIDs code (set2)
 int number_of_increments[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
 int current_pid_axis = 0;
 int current_pid_term = 0;
 float * current_pid_term_pointer = pidkp;
+float * current_pid_term_pointer1 = pidkp1; // dual PIDs code
+float * current_pid_term_pointer2 = pidkp2; // dual PIDs code
 
 float ierror[PIDNUMBER] = { 0 , 0 , 0};	
 float pidoutput[PIDNUMBER];
@@ -113,6 +100,7 @@ extern float looptime;
 extern float gyro[3];
 extern int onground;
 extern float looptime;
+extern float vbattfilt;
 
 
 #ifdef NORMAL_DTERM
@@ -252,6 +240,10 @@ float pid(int x )
     }
     
     limitf(  &pidoutput[x] , outlimit[x]);
+		
+		#ifdef PID_VOLTAGE_COMPENSATION
+	pidoutput[x] *= v_compensation;
+#endif
 
 return pidoutput[x];		 		
 }
@@ -262,7 +254,14 @@ return pidoutput[x];
 void pid_precalc()
 {
 	timefactor = 0.0032f / looptime;
+	#ifdef PID_VOLTAGE_COMPENSATION
+	v_compensation = mapf ( vbattfilt , 3.00 , 4.00 , PID_VC_FACTOR , 1.00);
+	if( v_compensation > PID_VC_FACTOR) v_compensation = PID_VC_FACTOR;
+	if( v_compensation < 1.00f) v_compensation = 1.00;
+#endif
+
 }
+
 
 
 #ifndef DTERM_LPF_2ND_HZ 
@@ -304,15 +303,21 @@ int next_pid_term()
 	{
 		case 0:
 			current_pid_term_pointer = pidki;
+		  current_pid_term_pointer1 = pidki1; // dual PIDs code
+			current_pid_term_pointer2 = pidki2; // dual PIDs code
 			current_pid_term = 1;
 			break;
 		case 1:
 			current_pid_term_pointer = pidkd;
+			current_pid_term_pointer1 = pidkd1; // dual PIDs code
+			current_pid_term_pointer2 = pidkd2; // dual PIDs code
 			current_pid_term = 2;
 			break;
 		case 2:
 			current_pid_term_pointer = pidkp;
-			current_pid_term = 0;
+	    current_pid_term_pointer1 = pidkp1; // dual PIDs code
+			current_pid_term_pointer2 = pidkp2; // dual PIDs code			
+		  current_pid_term = 0;
 			break;
 	}
 	
@@ -360,9 +365,42 @@ int change_pid_value(int increase)
     
 	current_pid_term_pointer[current_pid_axis] = current_pid_term_pointer[current_pid_axis] * multiplier;
 	
+// -------------- DUAL PIDS CODE -------------
+#ifdef ENABLE_DUAL_PIDS
+	extern char aux[AUXNUMBER];
+	if (!aux[PID_SET_CHANGE])
+	{
+		current_pid_term_pointer1[current_pid_axis]=current_pid_term_pointer[current_pid_axis];
+	} else
+	{
+		current_pid_term_pointer2[current_pid_axis]=current_pid_term_pointer[current_pid_axis];
+	}	
+#endif
+#ifndef ENABLE_DUAL_PIDS
+	current_pid_term_pointer1[current_pid_axis]=current_pid_term_pointer[current_pid_axis];
+#endif
+// -------------- END OF DUAL PIDS CODE -------------
+
     #ifdef COMBINE_PITCH_ROLL_PID_TUNING
 	if (current_pid_axis == 0) {
 		current_pid_term_pointer[current_pid_axis+1] = current_pid_term_pointer[current_pid_axis+1] * multiplier;
+
+// -------------- DUAL PIDS CODE -------------
+#ifdef ENABLE_DUAL_PIDS
+	extern char aux[AUXNUMBER];
+	if (!aux[PID_SET_CHANGE])
+	{
+		current_pid_term_pointer1[current_pid_axis+1]=current_pid_term_pointer[current_pid_axis+1];
+	} else
+	{
+		current_pid_term_pointer2[current_pid_axis+1]=current_pid_term_pointer[current_pid_axis+1];
+	}	
+#endif
+#ifndef ENABLE_DUAL_PIDS
+		current_pid_term_pointer1[current_pid_axis+1]=current_pid_term_pointer[current_pid_axis+1];
+#endif
+// -------------- END OF DUAL PIDS CODE -------------
+		
 	}
 	#endif
 	
@@ -383,5 +421,27 @@ int decrease_pid()
 {
 	return change_pid_value(0);
 }
+
+
+void rotateErrors()
+{
+	#ifdef YAW_FIX
+	// rotation around x axis:
+	ierror[1] -= ierror[2] * gyro[0] * looptime;
+	ierror[2] += ierror[1] * gyro[0] * looptime;
+
+	// rotation around y axis:
+	ierror[2] -= ierror[0] * gyro[1] * looptime;
+	ierror[0] += ierror[2] * gyro[1] * looptime;
+
+	// rotation around z axis:
+	ierror[0] -= ierror[1] * gyro[2] * looptime;
+	ierror[1] += ierror[0] * gyro[2] * looptime;
+#endif
+}
+
+
+
+
 
 

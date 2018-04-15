@@ -63,7 +63,7 @@ THE SOFTWARE.
 #endif									   
 						   
 						   
-#if defined (__GNUC__)&& !( defined (SOFT_LPF_NONE) || defined (SOFT_LPF_1ST_HZ) || defined (SOFT_LPF_2ST_HZ) )
+#if defined (__GNUC__)&& !( defined (SOFT_LPF_NONE) || defined (SOFT_LPF_1ST_HZ) || defined (SOFT_LPF_2ND_HZ) )
 #warning the soft lpf may not work correctly with gcc due to longer loop time
 #endif
 
@@ -83,7 +83,7 @@ void clk_init(void);
 void imu_init(void);
 extern void flash_load( void);
 extern void flash_hard_coded_pid_identifier(void);
-
+extern void flash_hard_coded_pid_identifier2(void); //dual PIDs code
 
 // looptime in seconds
 float looptime;
@@ -182,7 +182,8 @@ aux[CH_AUX1] = 1;
     #ifdef FLASH_SAVE1
 // read pid identifier for values in file pid.c
     flash_hard_coded_pid_identifier();
-
+    flash_hard_coded_pid_identifier2(); // dual PIDs code
+	
 // load flash saved variables
     flash_load( );
 #endif
@@ -473,7 +474,42 @@ rgb_led_lvc( );
 	buzzer();
 #endif
 
-            
+   // --------------------------- DUAL PIDS CODE -----------------
+#ifdef ENABLE_DUAL_PIDS
+	extern float pidkp[];
+	extern float pidki[];
+	extern float pidkd[];
+	extern float pidkp1[];
+	extern float pidki1[];
+	extern float pidkd1[];
+	extern float pidkp2[];
+	extern float pidki2[];
+	extern float pidkd2[];
+	if (!aux[PID_SET_CHANGE])
+	{
+			pidkp[0]=pidkp1[0];pidki[0]=pidki1[0];pidkd[0]=pidkd1[0];
+			pidkp[1]=pidkp1[1];pidki[1]=pidki1[1];pidkd[1]=pidkd1[1];
+			pidkp[2]=pidkp1[2];pidki[2]=pidki1[2];pidkd[2]=pidkd1[2];
+	} else
+	{
+			pidkp[0]=pidkp2[0];pidki[0]=pidki2[0];pidkd[0]=pidkd2[0];
+			pidkp[1]=pidkp2[1];pidki[1]=pidki2[1];pidkd[1]=pidkd2[1];
+			pidkp[2]=pidkp2[2];pidki[2]=pidki2[2];pidkd[2]=pidkd2[2];
+	}
+#endif
+#ifndef ENABLE_DUAL_PIDS
+	extern float pidkp[];
+	extern float pidki[];
+	extern float pidkd[];
+	extern float pidkp1[];
+	extern float pidki1[];
+	extern float pidkd1[];
+	pidkp[0]=pidkp1[0];pidki[0]=pidki1[0];pidkd[0]=pidkd1[0];
+	pidkp[1]=pidkp1[1];pidki[1]=pidki1[1];pidkd[1]=pidkd1[1];
+	pidkp[2]=pidkp1[2];pidki[2]=pidki1[2];pidkd[2]=pidkd1[2];
+#endif	
+// --------------------------- END OF DUAL PIDS CODE -----------------
+         
 #ifdef FPV_ON
 // fpv switch
     static int fpv_init = 0;

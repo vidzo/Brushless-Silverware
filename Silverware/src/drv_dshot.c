@@ -31,16 +31,16 @@
 // timing: 300 - 78uS bitbang
 // timing: 150 - 150uS bitbang
 
-//#define DSHOT600
-#define DSHOT150
+#define DSHOT600
+//#define DSHOT150
 //#define DSHOT300
 
 // IDLE_OFFSET is added to the throttle. Adjust its value so that the motors
 // still spin at minimum throttle.
-#define IDLE_OFFSET 40
+#define IDLE_OFFSET 32
 
 // if using 3 gpio A and 1 b enable "less delay" (for dshot300 only)
-//#define LESS_DELAY
+#define LESS_DELAY
 
 // READ THIS:
 

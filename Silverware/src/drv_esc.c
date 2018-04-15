@@ -7,8 +7,8 @@
 #ifdef USE_ESC_DRIVER
 
 // working motor range (microseconds)
-#define ESC_MIN 1180
-#define ESC_MAX 1860
+#define ESC_MIN 1152
+#define ESC_MAX 1836
 
 // esc throttle off setting (microseconds
 #define ESC_OFF 900

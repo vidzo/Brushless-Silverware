@@ -2,6 +2,7 @@
 #include "config.h"
 
 
+
 // These filters were made with the filter calculator at  "http://www.schwietering.com/jayduino/filtuino/"
 // the sample rate is 1Khz (loop time)
 
@@ -398,8 +399,8 @@ extern "C" float lpffilter( float in,int num )
     if ( num == 0 ) lpf_coeff_2nd();
     #endif
     
-	return filter[num].step(in );   
-	#endif
+	      return filter[num].step(in );   
+	      #endif
 	
 }
 
