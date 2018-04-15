@@ -9,7 +9,7 @@ There are two main steps to prep this file for flash.  The first will be in con
 
 STEP 1:  Open config.h with keil and make edits to set your selections in seven categories.
 
-         Hardware Selection - select bwhoop, e011, H8mini_blue_board based hardware, silverlight and dedicated_board, radio protocol
+**Hardware Selection - select bwhoop, e011, H8mini_blue_board based hardware, silverlight and dedicated_board, radio protocol
          
          Receiver Settings - set rates, transmitter type, expo and assign features to auxiliary channel switches *Channel defines can be found in defines.h file
                               
