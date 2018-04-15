@@ -1,43 +1,50 @@
 [![Build Status](https://travis-ci.org/silver13/BoldClash-BWHOOP-B-03.svg?branch=master)](https://travis-ci.org/silver13/BoldClash-BWHOOP-B-03)
 
-## NotFastEnuf Notes - Bwhoop B03 Silverware modified to work on BWHOOP, E011, or H8mini_blue_board.
-Last major update 3.13.18
+## Yet's Brushless Bwhoop B03 Silverware modified to work on BWHOOP, E011, H8mini_blue_board, Sliverlight and Dedicated brushless board. Based on the work of Silverxxx and NotFastEnuf.
+Last major update 15.4.18
 
-Testing a new layout for config.h  - feel free to let me know what you think.  Your feedback is appreciated. 
+### New layout for config.h that includes PID tuning. *Setpoint weight is still in pid.c file.
 
 There are two main steps to prep this file for flash.  The first will be in config.h and the second will be in pid.c file.
 
-STEP 1:  Open config.h with keil and make edits to set your selections in 6 categories.
+STEP 1:  Open config.h with keil and make edits to set your selections in seven categories.
 
-         _Hardware Selection_ - select bwhoop, e011, or H8mini_blue_board based hardware
+         _Hardware Selection_ - select bwhoop, e011, H8mini_blue_board based hardware, silverlight and dedicated_board, radio protocol
          
-         _Receiver Settings_ - set rates, expo, radio protocol, transmitter type and assign features to auxiliary channel switches
+         _Receiver Settings_ - set rates, transmitter type, expo and assign features to auxiliary channel switches *Channel defines can be found in defines.h file
                               
-         _Voltage Settings_ - low voltage cutoff and other voltage related settings
+		 _PID settings_ - Choose base PID, select dual PIDs or single PID through define,invert yaw based on prop rotation choice *PID tuned through gestures, Silvervise app with selected Bayang_BLE_APP protocol will allow you to see PID numbers					  
+		
+		 _Filter Settings_ -set gyro filter and D term filter frequencies and orders					  
+         
+	     _Motor Output Settings_ - motor filter frequency, features related to motor output
+		 
+		 _Voltage Settings_ - low voltage cutoff and other voltage related settings
          
-         _Filter Settings_ -set gyro filter and D term filter frequencies and orders
+		 _Additional Features_ - remaining features 
          
-         _Motor Output Settings_ - set pwm rate, motor curves, inverted yaw for props out, and features related to motor output
-                                 
-         _Additional Features_ - remaining special features 
-         
-STEP 2:  Open pid.c with keil and either edit pids to your preferred values or select a set of pids that I have prepared.   I plan to keep all my tunes in pid.c and will have them labeled and noted with the associated filter settings for each type of build.  All you have to do to use one of my tunes is uncomment the pid group you want to use and make sure the others are commented out.  I will keep whatever pids I'm using updated here if I change them and the default set will always be for a 7mm whoop with fpv gear installed.  Setpoint weight values are also just below pids - if you want a sharper stick feel on one of my tunes then change these values closer to 1.0
+STEP 2:  Open hardware.h and make edits to set your brushless settings
 
-## Current Experimental Features 
+         _ESC Driver Selection_ - select ESC driver (Oneshot) or Dshot according to ESCs, Blheli pass through driver *Additional setting changes may be required in drv_dhsot.c or drv_esc.c in accordance with the way you are connecting your board to the ESC. Information is found here http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=brushless_setup and http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=more_brushless_setup_info
 
- - E011 or Bwhoop Selection:  define your board type and hardware settings are automatically selected for E011, Bwhoop, bwhoop pro, E011c,  and beta fpv lite
- - Radio Type Selection:  Renamed aux channels as chan_5 through chan_10 and proper mapping is now controlled by defining your transmitter type.  Simply select devo, multi (for taranis or other multimodule), or stock (for toy tx) and assign the features you want to chan_#
- - Racemode:  flight mode with leveling on roll, acro on pitch, and yaw axis rotates about gravity vector.  Can be activated on an aux channel when in level mode.
- - Racemode Horizon: same as above with horizon on roll.
- - Horizon: leveling when upright, will flip or roll.
- - Kalman Gyro Filter:  adjustable gyro filter that's very similar to a 1st order filter but to me feels a little faster and a little weaker.  You decide...
- - Kalman Motor Filter:  adjustable motor output filter.  Same evaluation as the gyro version.
- - Idle up/Arming on aux channel:  idle speed is also adjustable.  Paired with mix increase throttle feature it behaves like airmode
- - Sticks Deadband:  adjustable deadband for transmitter inputs to compensate for gimbals that don't perfectly center
- - Motor Filter Frequencies:  motor filters are adjustable by a frequency instead of a decimal value.
- - AUTOBIND Has been added.  Set a fixed ID in your TX.  Stick gesture comand up-up-up to turn on autobind. Quad will flash once.  Stick gesture Down-Down-Down will save your fixed ID.  Unplug battery and plug in to verify.  No more power cycling TX to bind.
+		 _Motor Pins Selection_ - select motor pins based on ESC
+		 
+		 _Battery Voltage Settings_ - set ADC to give correct battery voltage setting for telemetry and LVC *Can be viewed in debug if using without telemetry. Values to be changed to get battery voltage explained in miscellaneous.c file and wiki
+		 
+		 _Misc Settings_ - telemetry transmitter power, set buzzer time for buzzer *http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=adding_a_buzzer
+		 
+## Current Experimental Features
 
- ## Bikemike's Blheli 4way Interface Support(from Betaflight) 15.03.18 (Yets)
+### Added 24.3.18
+ - PID Voltage compensation added. 
+
+### Added 24.3.18
+ - Joelucid's I term Yaw fix. Fix to stop yaw drifts in extreme moves. Can be commented in/out to test for differences (Credit to joelucid for code)
+ - Added back the original Silverware filters under filter settings. Allows users to test various tuning options
+ - Added Dual PID which can be switched on a channel. Single PID can be enabled if user prefers (Credit to SilverAG for code)
+ - Added automatic voltage telemetry correction/calibration factor.
+
+## Bikemike's Blheli 4way Interface Support(from Betaflight) 15.03.18
 
 This commit enables flashing and configuring Blheli using the Silverware FC. **May not work with all ESCs**
 
@@ -50,9 +57,21 @@ This commit enables flashing and configuring Blheli using the Silverware FC. **M
  
  Credit to Bikemike https://www.rcgroups.com/forums/showpost.php?p=38505698&postcount=11950
 
-_Easiest way to find me for feedback & discussion is here https://community.micro-motor-warehouse.com/t/notfastenuf-e011-bwhoop-silverware-fork/5501?u=notfastenuf_
 
-_end NFE notes_
+ - E011 or Bwhoop Selection:  define your board type and hardware settings are automatically selected for E011, Bwhoop, bwhoop pro, E011c,  and beta fpv lite
+ - Radio Type Selection:  Renamed aux channels as chan_5 through chan_10 and proper mapping is now controlled by defining your transmitter type.  Simply select devo, multi (for taranis or other multimodule), or stock (for toy tx) and assign the features you want to chan_#
+ - Racemode:  flight mode with leveling on roll, acro on pitch, and yaw axis rotates about gravity vector.  Can be activated on an aux channel when in level mode.
+ - Racemode Horizon: same as above with horizon on roll.
+ - Horizon: leveling when upright, will flip or roll.
+ - Kalman Gyro Filter:  adjustable gyro filter that's very similar to a 1st order filter but to me feels a little faster and a little weaker.  You decide...
+ - Kalman Motor Filter:  adjustable motor output filter.  Same evaluation as the gyro version.
+ - Idle up/Arming on aux channel:  idle speed is also adjustable.  Paired with mix increase throttle feature it behaves like airmode
+ - Sticks Deadband:  adjustable deadband for transmitter inputs to compensate for gimbals that don't perfectly center
+ - Motor Filter Frequencies:  motor filters are adjustable by a frequency instead of a decimal value.
+ - AUTOBIND Has been added.  Set a fixed ID in your TX.  Stick gesture comand up-up-up to turn on autobind. Quad will flash once.  Stick gesture Down-Down-Down will save your fixed ID.  Unplug battery and plug in to verify.  No more power cycling TX to bind. Currently only works with RX_BAYANG_TELEMETRY_AUTOBIND protol
+
+_ Please find me here for feedback and bugs; https://www.rcgroups.com/forums/showthread.php?3052088-Silverware-NFE-Yets-Brushless-Fork
+
 
 ## SilverWare - BoldClash BWHOOP B-03 version
 
@@ -101,11 +120,6 @@ The boldclash settings may need changes to work with gcc well. Turn off the soft
 
 ### Wiki
 http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=start
-
-### 03.19
-* Blheli passthrough support added for ESCs
-* Buzzer can be enabled on a channel/switch with BUZZER_ENABLES_CHAN_## (credit: Markus Gritsch)
-* Added RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND define to ensure all protocol builds would compile due to the nature of the autobind feature
 
 ### 01.18
 * 2 new D term filters, 1st and 2nd order with custom frequency
