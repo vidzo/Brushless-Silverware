@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/silver13/BoldClash-BWHOOP-B-03.svg?branch=master)](https://travis-ci.org/silver13/BoldClash-BWHOOP-B-03)
 
 
-## Yet's Brushless Bwhoop B03 Silverware modified to work on BWHOOP, E011, H8mini_blue_board, Sliverlight and Dedicated brushless board. Based on the work of Silverxxx and NotFastEnuf.
+## Yet's Brushless Bwhoop B03 Silverware modified to work on BWHOOP, E011, H8mini_blue_board, Sliverlight and Dedicated brushless board. Based on the work of Silverxxx and NotFastEnuf. ***EXPERIMENTAL*** Some features may not work
 Last major update 15.4.18
 
 ### New layout for config.h that includes PID tuning. *Setpoint weight is still in pid.c file.
