@@ -425,7 +425,7 @@ int decrease_pid()
 
 void rotateErrors()
 {
-	#ifdef YAW_FIX
+
 	// rotation around x axis:
 	ierror[1] -= ierror[2] * gyro[0] * looptime;
 	ierror[2] += ierror[1] * gyro[0] * looptime;
@@ -437,7 +437,7 @@ void rotateErrors()
 	// rotation around z axis:
 	ierror[0] -= ierror[1] * gyro[2] * looptime;
 	ierror[1] += ierror[0] * gyro[2] * looptime;
-#endif
+
 }
 
 
