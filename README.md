@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/silver13/BoldClash-BWHOOP-B-03.svg?branch=master)](https://travis-ci.org/silver13/BoldClash-BWHOOP-B-03)
 
+
 ## Yet's Brushless Bwhoop B03 Silverware modified to work on BWHOOP, E011, H8mini_blue_board, Sliverlight and Dedicated brushless board. Based on the work of Silverxxx and NotFastEnuf.
 Last major update 15.4.18
 
@@ -13,7 +14,7 @@ STEP 1:  Open config.h with keil and make edits to set your selections in seven
          
  - Receiver Settings_ - set rates, transmitter type, expo and assign features to auxiliary channel switches *Channel defines can be found in defines.h file
                               
- - PID settings_ - Choose base PID, select dual PIDs or single PID through define,invert yaw based on prop rotation choice *PID tuned through gestures, Silvervise app with selected Bayang_BLE_APP protocol will allow you to see PID numbers					  		
+ - PID settings_ - Choose base PID, select dual PIDs or single PID through define,invert yaw based on prop rotation choice *PID tuned through gestures, Silvervise app with selected Bayang_BLE_APP protocol will allow you to see PID numbers					  
  - Filter Settings_ -set gyro filter and D term filter frequencies and orders					  
          
  - Motor Output Settings_ - motor filter frequency, features related to motor output
@@ -24,11 +25,11 @@ STEP 1:  Open config.h with keil and make edits to set your selections in seven
          
 STEP 2:  Open hardware.h and make edits to set your brushless settings
 
-         _ESC Driver Selection_ - select ESC driver (Oneshot) or Dshot according to ESCs, Blheli pass through driver *Additional setting changes may be required in drv_dhsot.c or drv_esc.c in accordance with the way you are connecting your board to the ESC. Information is found here http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=brushless_setup and http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=more_brushless_setup_info
+ - ESC Driver Selection_ - select ESC driver (Oneshot) or Dshot according to ESCs, Blheli pass through driver *Additional setting changes may be required in drv_dhsot.c or drv_esc.c in accordance with the way you are connecting your board to the ESC. Information is found here http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=brushless_setup and http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=more_brushless_setup_info
 
  - Motor Pins Selection_ - select motor pins based on ESC
 		 
- - Batter Voltage Settings_ - set ADC to give correct battery voltage setting for telemetry and LVC *Can be viewed in debug if using without telemetry. Values to be changed to get battery voltage explained in miscellaneous.c file and wiki
+ - Battery Voltage Settings_ - set ADC to give correct battery voltage setting for telemetry and LVC *Can be viewed in debug if using without telemetry. Values to be changed to get battery voltage explained in miscellaneous.c file and wiki
 		 
  - Misc Settings_ - telemetry transmitter power, set buzzer time for buzzer *http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=adding_a_buzzer
 		 
