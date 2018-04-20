@@ -292,8 +292,4 @@
 #define SYS_CLOCK_FREQ_HZ 48000000
 #endif
 
-// for the ble beacon to work after in-flight reset
-#ifdef RX_BAYANG_PROTOCOL_BLE_BEACON
-#undef STOP_LOWBATTERY
-#endif
-// gcc warnings in main.c
+
