@@ -103,7 +103,7 @@
 // *************set only one below - kalman, 1st order, or second order - and adjust frequency
 //**************ABOVE 100 ADJUST IN INCRIMENTS OF 20, BELOW 100 ADJUST IN INCRIMENTS OF 10
 
-#define SOFT_KALMAN_GYRO KAL1_HZ_90
+//#define SOFT_KALMAN_GYRO KAL1_HZ_90
 //#define SOFT_LPF_1ST_HZ 80
 //#define SOFT_LPF_2ND_HZ 80
 //#define SOFT_LPF_1ST_023HZ
@@ -114,7 +114,7 @@
 //#define SOFT_LPF_4TH_088HZ
 //#define SOFT_LPF_4TH_160HZ
 //#define SOFT_LPF_4TH_250HZ
-//#define SOFT_LPF_NONE
+#define SOFT_LPF_NONE
 
 // *************Gyro LPF filter frequency
 // gyro filter 0 = 250hz delay 0.97mS
@@ -126,10 +126,10 @@
 // *************D term low pass filter type - set only one below and adjust frequency if adjustable filter is used
 // *************1st order adjustable, second order adjustable, or 3rd order fixed (non adjustable)
 //#define DTERM_LPF_1ST_HZ 100
-#define  DTERM_LPF_2ND_HZ 100
+//#define DTERM_LPF_2ND_HZ 100
 //#define DTERM_LPF3_88
 //#define NORMAL_DTERM
-//#define NEW_DTERM
+#define NEW_DTERM
 //#define MAX_FLAT_LPF_DIFF_DTERM
 
 
@@ -140,7 +140,7 @@
 // *************enable motor output filter - select and adjust frequency
 // motorfilter1: hanning 3 sample fir filter
 // motorfilter2: 1st lpf, 0.2 - 0.6 , 0.6 = less filtering
-#define MOTOR_FILTER2_ALPHA MFILT1_HZ_90
+//#define MOTOR_FILTER2_ALPHA MFILT1_HZ_90
 //#define MOTOR_KAL KAL1_HZ_70
 //#define MOTOR_FILTER
 //#define MOTOR_FILTER2_ALPHA 0.2

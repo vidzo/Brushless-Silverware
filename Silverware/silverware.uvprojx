@@ -448,6 +448,16 @@
           </GroupOption>
           <Files>
             <File>
+              <FileName>config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\config.h</FilePath>
+            </File>
+            <File>
+              <FileName>hardware.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\hardware.h</FilePath>
+            </File>
+            <File>
               <FileName>control.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\control.c</FilePath>
@@ -581,16 +591,6 @@
               <FileName>defines.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\defines.h</FilePath>
-            </File>
-            <File>
-              <FileName>hardware.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\hardware.h</FilePath>
-            </File>
-            <File>
-              <FileName>config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\config.h</FilePath>
             </File>
             <File>
               <FileName>debug.h</FileName>

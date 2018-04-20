@@ -309,6 +309,12 @@ if ( frame_received )
         rx[3] = 0.000610128f * channels[2]; 
         
         if ( rx[3] > 1 ) rx[3] = 1;
+				
+#ifndef DISABLE_EXPO
+	rx[0] = rcexpo ( rx[0] , EXPO_XY );
+	rx[1] = rcexpo ( rx[1] , EXPO_XY ); 
+	rx[2] = rcexpo ( rx[2] , EXPO_YAW ); 	
+#endif
         
         aux[CH_FLIP] = (channels[5] > 993) ? 1 : 0;
 		aux[CH_EXPERT] = (channels[6] > 993) ? 1 : 0;
