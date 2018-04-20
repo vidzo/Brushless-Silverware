@@ -42,10 +42,10 @@ float b[3] = { 1.0 , 1.0 , 1.0};
 
 
 /// output limit			
-const float outlimit[PIDNUMBER] = { 0.8 , 0.8 , 0.5 };
+const float outlimit[PIDNUMBER] = { 0.6 , 0.6 , 0.3 };
 
 // limit of integral term (abs)
-const float integrallimit[PIDNUMBER] = { 0.8 , 0.8 , 0.5 };
+const float integrallimit[PIDNUMBER] = { 0.6 , 0.6 , 0.3 };
 
 //#define RECTANGULAR_RULE_INTEGRAL
 //#define MIDPOINT_RULE_INTEGRAL

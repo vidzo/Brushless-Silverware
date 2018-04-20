@@ -78,15 +78,15 @@
 
 // first PID set (used as set 1 in dual PID mode or as default set in single PID mode)
 //Set 1
-#define PIDKP1  { 4.0e-2 , 4.0e-2  , 1.5e-1 }
-#define PIDKI1  { 1.0e-1 , 1.0e-1 , 1.5e-1 }
-#define PIDKD1  { 1.0e-1 , 1.0e-1  , 0.0e-1 }
+#define PIDKP1  { 5.00e-2 , 5.00e-2 , 2.50e-1 }
+#define PIDKI1  { 1.20e-1 , 1.20e-1 , 1.20e-1 }
+#define PIDKD1  { 2.00e-1 , 2.00e-1 , 0.0e-1 }
 
 // second PID set (used as set 2 in dual PID mode - has no function in single PID mode)
 //Set2
-#define PIDKP2  { 4.0e-2 , 4.0e-2  , 1.5e-1 }
-#define PIDKI2  { 1.0e-1 , 1.0e-1 , 1.5e-1 }
-#define PIDKD2  { 1.0e-1 , 1.0e-1  , 0.0e-1 }
+#define PIDKP2  { 2.50e-2 , 2.50e-2 , 1.30e-1 }
+#define PIDKI2  { 0.80e-1 , 0.80e-1 , 0.60e-1 }
+#define PIDKD2  { 1.00e-1 , 1.00e-1 , 0.0e-1 }
 
 // *************invert yaw pid for "PROPS OUT" configuration
 //#define INVERT_YAW_PID
