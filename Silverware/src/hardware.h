@@ -1,11 +1,12 @@
 // Hardware pin settings information in miscellaneaous.c
 
 //**********************************************************************************************************************
-//***********************************************BOARD SELECTION*****************************************************
+//***********************************************BOARD SELECTION********************************************************
 
 // *************DEFINE FLIGHT CONTROLLER HARDWARE - SELECT ONLY ONE 
 // *************uncomment BWHOOP define for bwhoop, bwhoop pro, E011C Santa Edition, and Beta FPV Lite Flight Controllers
 
+// *******NOTE: CHANGE THE MOTOR PIN ASSIGNMENT IN ACCORDANCE WITH YOUR BOARD AND ESC BEFORE TESTING & FLIGHT***********
 
 #define BWHOOP
 //#define E011
@@ -21,7 +22,8 @@
 //#define USE_ESC_DRIVER
 #define USE_DSHOT_DRIVER_BETA
 
-// FC must have MOSFETS and motor pulldown resistors removed. Use in conjunction with either USE_ESC_DRIVER or USE_DSHOT_DRIVER_BETA  
+// FC must have MOSFETS and motor pulldown resistors removed. 
+// Use in conjunction with either USE_ESC_DRIVER or USE_DSHOT_DRIVER_BETA  
 // MAY NOT WORK WITH ALL ESCS
 //#define USE_SERIAL_4WAY_BLHELI_INTERFACE
 
@@ -40,9 +42,10 @@
 
 
 //**********************************************************************************************************************
-//**************************************HARDWARE SETTINGS********************************************************
+//*****************************************HARDWARE SETTINGS************************************************************
 
-// *************automatic voltage telemetry correction/calibration factor - change the values below if voltage telemetry is inaccurate
+// *************automatic voltage telemetry correction/calibration factor - change the values below if voltage telemetry 
+// is inaccurate
 #define ACTUAL_BATTERY_VOLTAGE 4.20
 #define REPORTED_TELEMETRY_VOLTAGE 4.20
 

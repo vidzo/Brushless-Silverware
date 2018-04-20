@@ -18,7 +18,7 @@
 
 // invert = signal after fets (may need 1k pullup resistor)
 // commented = signal straight from CPU pins
-#define ESC_INVERT_SIGNAL
+//#define ESC_INVERT_SIGNAL
 
 // enable preload
 #define ENABLE_PRELOAD 

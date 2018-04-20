@@ -91,9 +91,6 @@
 // *************invert yaw pid for "PROPS OUT" configuration
 //#define INVERT_YAW_PID
 
-// *************joelucid's yaw drift code
-//#define YAW_FIX
-
 // *************Voltage compensation to increase handling at low battery
 //#define PID_VOLTAGE_COMPENSATION
 
@@ -196,7 +193,7 @@
 
 
 //**********************************************************************************************************************
-//****************************************************MISC SETTINGS****************************************************
+//****************************************************MISC SETTINGS*****************************************************
 
 
 // *************0 - 7 - power for telemetry

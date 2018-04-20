@@ -94,6 +94,7 @@ float * current_pid_term_pointer2 = pidkp2; // dual PIDs code
 float ierror[PIDNUMBER] = { 0 , 0 , 0};	
 float pidoutput[PIDNUMBER];
 static float lasterror[PIDNUMBER];
+float v_compensation = 1.00;
 
 extern float error[PIDNUMBER];
 extern float looptime;
