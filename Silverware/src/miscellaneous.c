@@ -121,10 +121,6 @@
 //#define RX_BAYANG_PROTOCOL_BLE_BEACON
 //#define RX_CX10BLUE_PROTOCOL
 
-
-// *************lost quad beeps using motors (30 sec timeout)
-//#define MOTOR_BEEPS
-
 // *************switch for fpv / other, requires fet
 // *************comment out to disable
 //#define FPV_ON CHAN_ON

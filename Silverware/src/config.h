@@ -207,6 +207,10 @@
 // *************external buzzer channel define to enable switch control
 //#define BUZZER_ENABLE CHAN_OFF
 
+// *************quad beeps using motors if failsafe occurs or lost signal (5 sec timeout)
+// *************can only be used with DSHOT_DRIVER_BETA
+//#define MOTOR_BEEPS
+
 // *************Comment out to disable pid tuning gestures
 #define PID_GESTURE_TUNING
 #define COMBINE_PITCH_ROLL_PID_TUNING
