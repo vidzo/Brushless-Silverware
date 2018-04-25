@@ -40,6 +40,11 @@ THE SOFTWARE.
 #include "defines.h"
 #include "led.h"
 
+float	throttle;
+int idle_state;
+extern int armed_state;
+extern int in_air;
+extern int arming_release;
 
 extern float rx[];
 extern float gyro[3];
@@ -183,16 +188,26 @@ pid_precalc();
 
 		
 
-float	throttle;
-int armed_state;
-int idle_state;
+
+#ifndef THROTTLE_SAFETY
+	#define THROTTLE_SAFETY .15f
+#endif
+
 		
 #ifndef ARMING
  armed_state = 1;
 #else
 	if (!aux[ARMING]){
 		armed_state = 0;
-	}else{ armed_state = 1;}
+	}else{ 
+	 if ((rx[3] > THROTTLE_SAFETY) && (arming_release == 0)){
+			armed_state = 0;
+		  ledcommand = 1;
+	 }else{
+			armed_state = 1;
+		  arming_release = 1;
+	 }
+	}
 #endif
 
 #ifndef IDLE_UP
@@ -209,13 +224,17 @@ int idle_state;
 
 if (armed_state == 0){
 	throttle = 0;
-}else{
-	if (idle_state == 0){
-		if ( rx[3] < 0.05f ) throttle = 0;
-		else throttle = (rx[3] - 0.05f)*1.05623158f;
-	}else{
-		throttle =  (float) IDLE_THR + rx[3] * (1.0f - (float) IDLE_THR);
-	}
+	in_air = 0;
+	arming_release = 0;
+	
+}else{                                                    										 //armed
+		if (idle_state == 0){                                     								 //if idle up feature is off - perform a regular throttle function
+				if ( rx[3] < 0.05f ) throttle = 0;                            				 //kill throttle at bottom w/small deadband
+				else throttle = (rx[3] - 0.05f)*1.05623158f;                 					 //scale throttle for rest of the stick   
+	 }else{ 																																		 //if idle up feature is on
+		throttle =  (float) IDLE_THR + rx[3] * (1.0f - (float) IDLE_THR);					 //establish idle up throttle mapping
+		if ((rx[3] > THROTTLE_SAFETY) && (in_air == 0)) in_air = 1; 							 //indicate change to airborne                					 		
+	}	
 }
 
 
@@ -526,13 +545,14 @@ overthrottle = 0.0f;
 		    }
 #endif				
 
-
+//if (in_air == 1){
 #ifdef MIX_LOWER_THROTTLE_3
 {
 #ifndef MIX_THROTTLE_REDUCTION_MAX
 #define MIX_THROTTLE_REDUCTION_MAX 0.5f
 #endif
 
+if (in_air == 1){
 float overthrottle = 0;
 
 for (int i = 0; i < 4; i++)
@@ -584,7 +604,9 @@ if ( underthrottle < 0.0f)
 #ifdef MIX_THROTTLE_FLASHLED
 if ( underthrottle < -0.01f) ledcommand = 1;
 #endif
-}
+	}
+}	
+
 #endif
 
             

@@ -287,6 +287,11 @@
 #pragma diag_warning 1035 , 177 , 4017
 #pragma diag_error 260
 
+//Throttle must drop below this value if arming feature is enabled for arming to take place.  MIX_INCREASE_THROTTLE_3 if enabled
+//will also not activate on the ground untill this threshold is passed during takeoff for safety and better staging behavior.
+//#define THROTTLE_SAFETY .10f
+
+
 // define logic - do not change
 ///////////////
 // used for pwm calculations
