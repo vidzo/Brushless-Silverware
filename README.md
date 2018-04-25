@@ -37,6 +37,7 @@ STEP 2:  Open hardware.h and make edits to set your brushless settings
 
 ### Added 25.4.18
  - Added JazzMac's experimental DShot DMA driver *EXPERIMENTAL*
+ - Added throttle safety option (NFE)
  
  ### Added 22.4.18
  - Re-added motor beeps for use with Dshot driver for lost quad
