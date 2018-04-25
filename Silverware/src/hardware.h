@@ -21,6 +21,7 @@
 // dshot driver = esc signal from gate of FET only
 //#define USE_ESC_DRIVER
 #define USE_DSHOT_DRIVER_BETA
+//#define USE_DSHOT_DMA_DRIVER
 
 // FC must have MOSFETS and motor pulldown resistors removed. 
 // Use in conjunction with either USE_ESC_DRIVER or USE_DSHOT_DRIVER_BETA  
