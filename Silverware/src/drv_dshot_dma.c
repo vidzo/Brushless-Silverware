@@ -34,18 +34,11 @@
 // Select Dshot150 or Dshot300. Dshot150 consumes quite some main loop time.
 // DShot300 may require removing the input filter cap on the ESC:
 
-#define DSHOT_DMA_PORT_A_B
-//#define DSHOT_DMA_PORT_A
-
-#ifdef DSHOT_DMA_PORT_A_B
-	#define DSHOT_DMA_PHASE	2
-#else
-	#define DSHOT_DMA_PHASE 1
-#endif
-
+#define DSHOT600
+//#define DSHOT300
 //#define DSHOT150
-#define DSHOT300
-//#define DSHOT600
+
+
 
 #ifdef DSHOT150
 	#define DSHOT_BIT_TIME 		((48000/150)-1)
@@ -103,26 +96,26 @@
 #endif
 #endif
 
+#if defined(MOTOR0_PIN_PB0) || defined(MOTOR0_PIN_PB1) || defined(MOTOR1_PIN_PB0) || defined(MOTOR1_PIN_PB1) ||defined(MOTOR2_PIN_PB0) || defined(MOTOR2_PIN_PB1) || defined(MOTOR3_PIN_PB0) || defined(MOTOR3_PIN_PB1)
+	#define DSHOT_DMA_PHASE	2												// motor pins at both portA and portB
+#else
+	#define DSHOT_DMA_PHASE	1												// motor pins all at portA
+#endif
+
 extern int failsafe;
 extern int onground;
 
 int pwmdir = 0;
 static unsigned long pwm_failsafe_time = 1;
 
-volatile uint16_t dshot_dma_phase = 0;			// 1:portA  2:portB	 0:idle
-volatile uint16_t dshot_packet[4];					// 16bits dshot data for 4 motors
+volatile uint16_t dshot_dma_phase = 0;						// 1:portA  2:portB	 0:idle
+volatile uint16_t dshot_packet[4];								// 16bits dshot data for 4 motors
 
-volatile uint16_t motor_data_portA[ 16+1 ] = { 0 };	// DMA buffer: reset output when bit data=0 at TOH timing
-volatile uint16_t motor_data_portB[ 16+1 ] = { 0 };	//
+volatile uint16_t motor_data_portA[ 16 ] = { 0 };	// DMA buffer: reset output when bit data=0 at TOH timing
+volatile uint16_t motor_data_portB[ 16 ] = { 0 };	//
 
-#ifdef DSHOT_DMA_PORT_A_B
-volatile uint16_t dshot_portA[5]= { DSHOT_PIN_1 | DSHOT_PIN_2 | DSHOT_PIN_3,
-													 DSHOT_PIN_1, DSHOT_PIN_2, DSHOT_PIN_3, 0 };
-#else
-volatile uint16_t dshot_portA[5]= { DSHOT_PIN_1 | DSHOT_PIN_2 | DSHOT_PIN_3 | DSHOT_PIN_0,
-													 DSHOT_PIN_1, DSHOT_PIN_2, DSHOT_PIN_3, DSHOT_PIN_0    };													 
-#endif													
-volatile uint16_t dshot_portB[1]= { DSHOT_PIN_0 };
+volatile uint16_t dshot_portA[1] = { 0 };					// sum of all motor pins at portA 								
+volatile uint16_t dshot_portB[1] = { 0 };					// sum of all motor pins at portB
 
 typedef enum { false, true } bool;
 void make_packet( uint8_t number, uint16_t value, bool telemetry );
@@ -161,7 +154,16 @@ void pwm_init()
 	GPIO_InitStructure.GPIO_Pin = DSHOT_PIN_3 ;
 	GPIO_Init( DSHOT_PORT_3, &GPIO_InitStructure );
 	
-	// DShot timer/DMA init
+	if( DSHOT_PORT_0 == GPIOA )	*dshot_portA |= DSHOT_PIN_0;
+	else												*dshot_portB |= DSHOT_PIN_0;
+	if( DSHOT_PORT_1 == GPIOA )	*dshot_portA |= DSHOT_PIN_1;
+	else												*dshot_portB |= DSHOT_PIN_1;
+	if( DSHOT_PORT_2 == GPIOA )	*dshot_portA |= DSHOT_PIN_2;
+	else												*dshot_portB |= DSHOT_PIN_2;
+	if( DSHOT_PORT_3 == GPIOA )	*dshot_portA |= DSHOT_PIN_3;
+	else												*dshot_portB |= DSHOT_PIN_3;
+
+// DShot timer/DMA init
 	// TIM3_UP  DMA_CH3: set all output to HIGH		at TIM3 update
 	// TIM3_CH3 DMA_CH2: reset output if data=0		at T0H timing
 	// TIM3_CH1 DMA_CH4: reset all output					at T1H timing  
@@ -361,24 +363,20 @@ void dshot_dma_start()
 	for ( uint8_t i = 0; i < 16; i++ ) {
 		motor_data_portA[ i ] = 0;
 		motor_data_portB[ i ] = 0;
+			
+	  if ( !( dshot_packet[0] & 0x8000 ) ) {
+			if( DSHOT_PORT_0 == GPIOA )	motor_data_portA[ i ] |= DSHOT_PIN_0;
+			else 												motor_data_portB[ i ] |= DSHOT_PIN_0; }
+	  if ( !( dshot_packet[1] & 0x8000 ) ) {
+			if( DSHOT_PORT_1 == GPIOA )	motor_data_portA[ i ] |= DSHOT_PIN_1;
+			else 												motor_data_portB[ i ] |= DSHOT_PIN_1; }
+	  if ( !( dshot_packet[2] & 0x8000 ) ) {
+			if( DSHOT_PORT_2 == GPIOA )	motor_data_portA[ i ] |= DSHOT_PIN_2;
+			else 												motor_data_portB[ i ] |= DSHOT_PIN_2; }
+	  if ( !( dshot_packet[3] & 0x8000 ) ) {
+			if( DSHOT_PORT_3 == GPIOA )	motor_data_portA[ i ] |= DSHOT_PIN_3;
+			else 												motor_data_portB[ i ] |= DSHOT_PIN_3; }
 		
-		#ifdef DSHOT_DMA_PORT_A_B
-	  if ( !( dshot_packet[0] & 0x8000 ) )		
-		   motor_data_portB[ i ] |= dshot_portB[ 0 ];
-		#else
-	  if ( !( dshot_packet[0] & 0x8000 ) )		
-		   motor_data_portA[ i ] |= dshot_portA[ 4 ];		
-		#endif
-					
-	  if ( !( dshot_packet[1] & 0x8000 ) )  				
-			 motor_data_portA[ i ] |= dshot_portA[ 1 ];
-			
-	  if ( !( dshot_packet[2] & 0x8000 ) )  				
-			 motor_data_portA[ i ] |= dshot_portA[ 2 ];
-			
-	  if ( !( dshot_packet[3] & 0x8000 ) )  				
-			 motor_data_portA[ i ] |= dshot_portA[ 3 ];
-	
 	  dshot_packet[0] <<= 1;
 	  dshot_packet[1] <<= 1;
 	  dshot_packet[2] <<= 1;
