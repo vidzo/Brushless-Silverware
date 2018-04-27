@@ -1,7 +1,9 @@
 [![Build Status](https://travis-ci.org/silver13/BoldClash-BWHOOP-B-03.svg?branch=master)](https://travis-ci.org/silver13/BoldClash-BWHOOP-B-03)
 
-## Yets' Brushless Bwhoop B03 Silverware modified to work on BWHOOP, E011, H8mini_blue_board, Sliverlight and Dedicated brushless board. Based on the work of Silverxxx and NotFastEnuf.
-Last major update 15.4.18
+## Yets' Brushless Bwhoop B03 Silverware modified to work on BWHOOP, E011, H8mini_blue_board, Sliverlight and Dedicated brushless board. 
+Based on the work of Silverxxx and NotFastEnuf.
+
+Last major update 24.4.18
 
 ### New layout for config.h that includes PID tuning. *Setpoint weight is still in pid.c file.
 
@@ -9,14 +11,16 @@ There are two main steps to prep this file for flash.  The first will be in con
 
 STEP 1:  Open config.h with keil and make edits to set your selections in seven categories.
 
-         *Hardware Selection - select bwhoop, e011, H8mini_blue_board based hardware, silverlight and dedicated_board, radio protocol
-         
-         *Receiver Settings - set rates, transmitter type, expo and assign features to auxiliary channel switches *Channel defines can be found in defines.h file
-                              
-		 *PID settings - Choose base PID, select dual PIDs or single PID through define,invert yaw based on prop rotation choice *PID tuned through gestures, Silvervise app with selected Bayang_BLE_APP protocol will allow you to see PID numbers					  
-		
-		 *Filter Settings -set gyro filter and D term filter frequencies and orders					  
-         
+         *Hardware Selection - select bwhoop, e011, H8mini_blue_board based hardware, silverlight and dedicated_board, radio protocol
+
+         *Receiver Settings - set rates, transmitter type, expo and assign features to auxiliary channel switches *Channel defines 
+		 can be found in defines.h file
+
+		 *PID settings - Choose base PID, select dual PIDs or single PID through define,invert yaw based on prop rotation choice 
+		 PID tuned through gestures, Silvervise app with selected Bayang_BLE_APP protocol will allow you to see PID numbers					  
+
+         *Filter Settings - set gyro filter and D term filter frequencies and orders					  
+
 	     *Motor Output Settings - motor filter frequency, features related to motor output
 		 
 		 *Voltage Settings - low voltage cutoff and other voltage related settings
@@ -25,11 +29,16 @@ STEP 1:  Open config.h with keil and make edits to set your selections in seven
          
 STEP 2:  Open hardware.h and make edits to set your brushless settings
 
-         *ESC Driver Selection - select ESC driver (Oneshot) or Dshot according to ESCs, Blheli pass through driver *Additional setting changes may be required in drv_dhsot.c or drv_esc.c in accordance with the way you are connecting your board to the ESC. Information is found here http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=brushless_setup and http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=more_brushless_setup_info
+         *ESC Driver Selection - select ESC driver (Oneshot) or Dshot according to ESCs, Blheli pass through driver 
+		 Additional setting changes may be required in drv_dhsot.c or drv_esc.c in accordance with the way you are connecting your board to the ESC. 
+		 Information is found here;
+		 http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=brushless_setup
+		 http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=more_brushless_setup_info
 
 		 *Motor Pins Selection - select motor pins based on ESC
 		 
-		 *Battery Voltage Settings - set ADC to give correct battery voltage setting for telemetry and LVC *Can be viewed in debug if using without telemetry. Values to be changed to get battery voltage explained in miscellaneous.c file and wiki
+		 *Battery Voltage Settings - set ADC to give correct battery voltage setting for telemetry and LVC 
+		 - Can be viewed in debug if using without telemetry. Values to be changed to get battery voltage explained in miscellaneous.c file and wiki
 		 
 		 *Misc Settings - telemetry transmitter power, set buzzer time for buzzer *http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=adding_a_buzzer
 		 
@@ -66,7 +75,7 @@ This commit enables flashing and configuring Blheli using the Silverware FC. **M
 
 
  - E011 or Bwhoop Selection:  define your board type and hardware settings are automatically selected for E011, Bwhoop, bwhoop pro, E011c,  and beta fpv lite
- - Radio Type Selection:  Renamed aux channels as chan_5 through chan_10 and proper mapping is now controlled by defining your transmitter type.  Simply select devo, multi (for taranis or other multimodule), or stock (for toy tx) and assign the features you want to chan_#
+ - Radio Type Selection:  Renamed aux channels as chan_5 through chan_10 and proper mapping is now controlled by defining your transmitter type. Simply select devo, multi (for taranis or other multimodule), or stock (for toy tx) and assign the features you want to chan_#
  - Racemode:  flight mode with leveling on roll, acro on pitch, and yaw axis rotates about gravity vector.  Can be activated on an aux channel when in level mode.
  - Racemode Horizon: same as above with horizon on roll.
  - Horizon: leveling when upright, will flip or roll.
