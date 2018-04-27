@@ -9,7 +9,7 @@ Last major update 24.4.18
 
 There are two main steps to prep this file for flash.  The first will be in config.h and the second will be in pid.c file.
 
-STEP 1:  Open config.h with keil and make edits to set your selections in seven categories.
+### STEP 1:  Open config.h with keil and make edits to set your selections in seven categories.
 
 *Hardware Selection - select bwhoop, e011, H8mini_blue_board based hardware, silverlight and dedicated_board, radio protocol
 
@@ -23,7 +23,7 @@ STEP 1:  Open config.h with keil and make edits to set your selections in seven
          
 *Additional Features - remaining features 
          
-STEP 2:  Open hardware.h and make edits to set your brushless settings
+### STEP 2:  Open hardware.h and make edits to set your brushless settings
 
 *ESC Driver Selection - select ESC driver (Oneshot) or Dshot according to ESCs, Blheli pass through driver. Additional setting changes may be required in drv_dhsot.c or drv_esc.c in accordance with the way you are connecting your board to the ESC. 
 Information is found here;
