@@ -93,6 +93,7 @@
 #define SOFTSPI_3WIRE 
 #endif
 
+
 #ifdef  BWHOOP
 #define LED_NUMBER 2
 #define LED1PIN GPIO_Pin_2
@@ -213,6 +214,13 @@
 #define GYRO_ID_4 0x72
 //#define RADIO_XN297
 #define RADIO_XN297L
+
+#ifdef USE_DSHOT_DMA_DRIVER
+#define SIXAXIS_READ_DMA
+#define USE_HARDWARE_I2C 
+#undef USE_SOFTWARE_I2C
+#endif
+
 
 // pwm pin initialization
 #define PWM_PA4

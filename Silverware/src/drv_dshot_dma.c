@@ -3,9 +3,9 @@
 // Modified by JazzMac to support DMA transfer
 
 	// DShot timer/DMA init
-	// TIM3_UP  DMA_CH3: set all output to HIGH		at TIM3 update
-	// TIM3_CH3 DMA_CH2: reset output if data=0		at T0H timing
-	// TIM3_CH1 DMA_CH4: reset all output					at T1H timing  
+	// TIM1_UP  DMA_CH5: set all output to HIGH		at TIM1 update
+	// TIM1_CH1 DMA_CH2: reset output if data=0		at T0H timing
+	// TIM1_CH4 DMA_CH4: reset all output					at T1H timing  
 
 // this DMA driver is done with the reference to http://www.cnblogs.com/shangdawei/p/4762035.html
 
@@ -41,17 +41,17 @@
 
 
 #ifdef DSHOT150
-	#define DSHOT_BIT_TIME 		((48000/150)-1)
+	#define DSHOT_BIT_TIME 		((SYS_CLOCK_FREQ_HZ/1000/150)-1)
 	#define DSHOT_T0H_TIME 		(DSHOT_BIT_TIME*0.30 + 0.05 )
   #define DSHOT_T1H_TIME 		(DSHOT_BIT_TIME*0.60 + 0.05 )
 #endif
 #ifdef DSHOT300
-	#define DSHOT_BIT_TIME 		((48000/300)-1)
+	#define DSHOT_BIT_TIME 		((SYS_CLOCK_FREQ_HZ/1000/300)-1)
 	#define DSHOT_T0H_TIME 		(DSHOT_BIT_TIME*0.30 + 0.05 )
   #define DSHOT_T1H_TIME 		(DSHOT_BIT_TIME*0.60 + 0.05 )
 #endif
 #ifdef DSHOT600
-	#define DSHOT_BIT_TIME 		((48000/600)-1)
+	#define DSHOT_BIT_TIME 		((SYS_CLOCK_FREQ_HZ/1000/600)-1)
 	#define DSHOT_T0H_TIME 		(DSHOT_BIT_TIME*0.30 + 0.05 )
   #define DSHOT_T1H_TIME 		(DSHOT_BIT_TIME*0.60 + 0.05 )
 #endif
@@ -164,46 +164,46 @@ void pwm_init()
 	else												*dshot_portB |= DSHOT_PIN_3;
 
 // DShot timer/DMA init
-	// TIM3_UP  DMA_CH3: set all output to HIGH		at TIM3 update
-	// TIM3_CH3 DMA_CH2: reset output if data=0		at T0H timing
-	// TIM3_CH1 DMA_CH4: reset all output					at T1H timing  
+	// TIM1_UP  DMA_CH5: set all output to HIGH		at TIM1 update
+	// TIM1_CH1 DMA_CH2: reset output if data=0		at T0H timing
+	// TIM1_CH4 DMA_CH4: reset all output					at T1H timing  
 	
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	TIM_OCInitTypeDef TIM_OCInitStructure;
 	
 	TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
   TIM_OCStructInit(&TIM_OCInitStructure);
-	// TIM3 Periph clock enable
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+	// TIM1 Periph clock enable
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 	
 	/* Time base configuration */
 	TIM_TimeBaseStructure.TIM_Period = 						DSHOT_BIT_TIME;
 	TIM_TimeBaseStructure.TIM_Prescaler = 				0;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 		0;
 	TIM_TimeBaseStructure.TIM_CounterMode = 			TIM_CounterMode_Up;
-	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
-	TIM_ARRPreloadConfig(TIM3, DISABLE);
-
-	/* Timing Mode configuration: Channel 3 */
-	TIM_OCInitStructure.TIM_OCMode = 							TIM_OCMode_Timing;
-	TIM_OCInitStructure.TIM_OutputState = 				TIM_OutputState_Disable;
-	TIM_OCInitStructure.TIM_Pulse = 							DSHOT_T0H_TIME;
-	TIM_OC3Init(TIM3, &TIM_OCInitStructure);
-	TIM_OC3PreloadConfig(TIM3, TIM_OCPreload_Disable);	
+	TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
+	TIM_ARRPreloadConfig(TIM1, DISABLE);
 
 	/* Timing Mode configuration: Channel 1 */
 	TIM_OCInitStructure.TIM_OCMode = 							TIM_OCMode_Timing;
 	TIM_OCInitStructure.TIM_OutputState = 				TIM_OutputState_Disable;
+	TIM_OCInitStructure.TIM_Pulse = 							DSHOT_T0H_TIME;
+	TIM_OC1Init(TIM1, &TIM_OCInitStructure);
+	TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Disable);	
+
+	/* Timing Mode configuration: Channel 4 */
+	TIM_OCInitStructure.TIM_OCMode = 							TIM_OCMode_Timing;
+	TIM_OCInitStructure.TIM_OutputState = 				TIM_OutputState_Disable;
 	TIM_OCInitStructure.TIM_Pulse = 							DSHOT_T1H_TIME;
-	TIM_OC1Init(TIM3, &TIM_OCInitStructure);
-	TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Disable);
+	TIM_OC4Init(TIM1, &TIM_OCInitStructure);
+	TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Disable);
 	
 	DMA_InitTypeDef DMA_InitStructure;
 	
 	DMA_StructInit(&DMA_InitStructure);
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 	
-	/* DMA1 Channe3 configuration ----------------------------------------------*/
+	/* DMA1 Channe5 configuration ----------------------------------------------*/
 	DMA_DeInit(DMA1_Channel3);
 	DMA_InitStructure.DMA_PeripheralBaseAddr = 		(uint32_t)&GPIOA->BSRR;
 	DMA_InitStructure.DMA_MemoryBaseAddr = 				(uint32_t)dshot_portA;
@@ -216,14 +216,14 @@ void pwm_init()
 	DMA_InitStructure.DMA_Mode = 									DMA_Mode_Normal;
 	DMA_InitStructure.DMA_Priority = 							DMA_Priority_High;
 	DMA_InitStructure.DMA_M2M = 									DMA_M2M_Disable;
-	DMA_Init(DMA1_Channel3, &DMA_InitStructure);
+	DMA_Init(DMA1_Channel5, &DMA_InitStructure);
 	
 	/* DMA1 Channel2 configuration ----------------------------------------------*/
 	DMA_DeInit(DMA1_Channel2);
 	DMA_InitStructure.DMA_PeripheralBaseAddr = 		(uint32_t)&GPIOA->BRR;
 	DMA_InitStructure.DMA_MemoryBaseAddr = 				(uint32_t)motor_data_portA;
 	DMA_InitStructure.DMA_DIR = 									DMA_DIR_PeripheralDST;
-	DMA_InitStructure.DMA_BufferSize = 						16+1;
+	DMA_InitStructure.DMA_BufferSize = 						16;
 	DMA_InitStructure.DMA_PeripheralInc = 				DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = 						DMA_MemoryInc_Enable;
 	DMA_InitStructure.DMA_PeripheralDataSize = 		DMA_PeripheralDataSize_Word;
@@ -238,7 +238,7 @@ void pwm_init()
 	DMA_InitStructure.DMA_PeripheralBaseAddr = 		(uint32_t)&GPIOA->BRR;
 	DMA_InitStructure.DMA_MemoryBaseAddr = 				(uint32_t)dshot_portA;
 	DMA_InitStructure.DMA_DIR = 									DMA_DIR_PeripheralDST;
-	DMA_InitStructure.DMA_BufferSize = 						16+1;
+	DMA_InitStructure.DMA_BufferSize = 						16;
 	DMA_InitStructure.DMA_PeripheralInc = 				DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = 						DMA_MemoryInc_Disable;
 	DMA_InitStructure.DMA_PeripheralDataSize = 		DMA_PeripheralDataSize_Word;
@@ -248,7 +248,7 @@ void pwm_init()
 	DMA_InitStructure.DMA_M2M = 									DMA_M2M_Disable;
 	DMA_Init(DMA1_Channel4, &DMA_InitStructure);
 	
-	TIM_DMACmd(TIM3, TIM_DMA_Update | TIM_DMA_CC3 | TIM_DMA_CC1, ENABLE);
+	TIM_DMACmd(TIM1, TIM_DMA_Update | TIM_DMA_CC4 | TIM_DMA_CC1, ENABLE);
 	
 	NVIC_InitTypeDef NVIC_InitStructure;
 	/* configure DMA1 Channel4 interrupt */
@@ -266,70 +266,70 @@ void pwm_init()
 
 void dshot_dma_portA()
 {		
-	DMA1_Channel3->CPAR = (uint32_t)&GPIOA->BSRR;
-	DMA1_Channel3->CMAR = (uint32_t)dshot_portA;
+	DMA1_Channel5->CPAR = (uint32_t)&GPIOA->BSRR;
+	DMA1_Channel5->CMAR = (uint32_t)dshot_portA;
 	DMA1_Channel2->CPAR = (uint32_t)&GPIOA->BRR;
 	DMA1_Channel2->CMAR = (uint32_t)motor_data_portA;
 	DMA1_Channel4->CPAR = (uint32_t)&GPIOA->BRR;
 	DMA1_Channel4->CMAR = (uint32_t)dshot_portA;
 	
-	DMA_ClearFlag( DMA1_FLAG_GL2 | DMA1_FLAG_GL4 | DMA1_FLAG_GL3 );
+	DMA_ClearFlag( DMA1_FLAG_GL2 | DMA1_FLAG_GL4 | DMA1_FLAG_GL5 );
 	
-	DMA1_Channel3->CNDTR = 16;
+	DMA1_Channel5->CNDTR = 16;
 	DMA1_Channel2->CNDTR = 16;
 	DMA1_Channel4->CNDTR = 16;
 	
-	TIM3->SR = 0;
+	TIM1->SR = 0;
 		
 	DMA_Cmd(DMA1_Channel2, ENABLE);
 	DMA_Cmd(DMA1_Channel4, ENABLE);
-	DMA_Cmd(DMA1_Channel3, ENABLE);	
+	DMA_Cmd(DMA1_Channel5, ENABLE);	
 	
-	TIM_DMACmd(TIM3, TIM_DMA_Update | TIM_DMA_CC3 | TIM_DMA_CC1, ENABLE);
+	TIM_DMACmd(TIM1, TIM_DMA_Update | TIM_DMA_CC4 | TIM_DMA_CC1, ENABLE);
 	
-	TIM_SetCounter( TIM3, DSHOT_BIT_TIME );
-	TIM_Cmd( TIM3, ENABLE );
+	TIM_SetCounter( TIM1, DSHOT_BIT_TIME );
+	TIM_Cmd( TIM1, ENABLE );
 }
 
 void dshot_dma_portB()
 {		
-	DMA1_Channel3->CPAR = (uint32_t)&GPIOB->BSRR;
-	DMA1_Channel3->CMAR = (uint32_t)dshot_portB;
+	DMA1_Channel5->CPAR = (uint32_t)&GPIOB->BSRR;
+	DMA1_Channel5->CMAR = (uint32_t)dshot_portB;
 	DMA1_Channel2->CPAR = (uint32_t)&GPIOB->BRR;
 	DMA1_Channel2->CMAR = (uint32_t)motor_data_portB;
 	DMA1_Channel4->CPAR = (uint32_t)&GPIOB->BRR;
 	DMA1_Channel4->CMAR = (uint32_t)dshot_portB;
 	
-	DMA_ClearFlag( DMA1_FLAG_GL2 | DMA1_FLAG_GL4 | DMA1_FLAG_GL3 );
+	DMA_ClearFlag( DMA1_FLAG_GL2 | DMA1_FLAG_GL4 | DMA1_FLAG_GL5 );
 	
-	DMA1_Channel3->CNDTR = 16;
+	DMA1_Channel5->CNDTR = 16;
 	DMA1_Channel2->CNDTR = 16;
 	DMA1_Channel4->CNDTR = 16;
 	
-	TIM3->SR = 0;
+	TIM1->SR = 0;
 		
 	DMA_Cmd(DMA1_Channel2, ENABLE);
 	DMA_Cmd(DMA1_Channel4, ENABLE);
-	DMA_Cmd(DMA1_Channel3, ENABLE);	
+	DMA_Cmd(DMA1_Channel5, ENABLE);	
 	
-	TIM_DMACmd(TIM3, TIM_DMA_Update | TIM_DMA_CC3 | TIM_DMA_CC1, ENABLE);
+	TIM_DMACmd(TIM1, TIM_DMA_Update | TIM_DMA_CC4 | TIM_DMA_CC1, ENABLE);
 	
-	TIM_SetCounter( TIM3, DSHOT_BIT_TIME );
-	TIM_Cmd( TIM3, ENABLE );
+	TIM_SetCounter( TIM1, DSHOT_BIT_TIME );
+	TIM_Cmd( TIM1, ENABLE );
 }
 
 
 void DMA1_Channel4_5_IRQHandler(void)
 {	
-	DMA_Cmd(DMA1_Channel3, DISABLE);
+	DMA_Cmd(DMA1_Channel5, DISABLE);
 	DMA_Cmd(DMA1_Channel2, DISABLE);
 	DMA_Cmd(DMA1_Channel4, DISABLE);		
 	
-	TIM_DMACmd(TIM3, TIM_DMA_Update | TIM_DMA_CC3 | TIM_DMA_CC1, DISABLE);
+	TIM_DMACmd(TIM1, TIM_DMA_Update | TIM_DMA_CC4 | TIM_DMA_CC1, DISABLE);
 	
 	DMA_ClearITPendingBit(DMA1_IT_TC4);		
 	
-	TIM_Cmd( TIM3, DISABLE );
+	TIM_Cmd( TIM1, DISABLE );
 	
 	if( --dshot_dma_phase == 1 ) {
 		dshot_dma_portB();	
