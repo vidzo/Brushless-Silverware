@@ -144,7 +144,7 @@ clk_init();
 #endif
 	
   gpio_init();	
-	
+  ledon(255);	
 	spi_init();
 	
   time_init();

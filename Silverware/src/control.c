@@ -545,14 +545,14 @@ overthrottle = 0.0f;
 		    }
 #endif				
 
-//if (in_air == 1){
+
 #ifdef MIX_LOWER_THROTTLE_3
 {
 #ifndef MIX_THROTTLE_REDUCTION_MAX
 #define MIX_THROTTLE_REDUCTION_MAX 0.5f
 #endif
 
-if (in_air == 1){
+
 float overthrottle = 0;
 
 for (int i = 0; i < 4; i++)
@@ -604,9 +604,7 @@ if ( underthrottle < 0.0f)
 #ifdef MIX_THROTTLE_FLASHLED
 if ( underthrottle < -0.01f) ledcommand = 1;
 #endif
-	}
 }	
-
 #endif
 
             
