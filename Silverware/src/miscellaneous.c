@@ -1,8 +1,30 @@
-//ADC scalefactor explained by Ian444
-//As mcRich implied the scalefactor needs to be adjusted slightly for each board if you want exact voltages. I usually tune the scalefactor using the voltage readout via telemetry on a Devo. 
-//I’m not sure if the Taranis displays the voltage, but if it can, here is how to do it.
-//Say voltage of batt is 4.03V and the tx displays 4.09V. Get the calculator out, 4.03/4.09 x 0.001364 = 0.001344, so set 0.001344 for scalefactor.
-//So to summarise:(actual batt voltage/reported batt voltage) x current scalefactor = new scalefactor
+// LED FLASH CODES
+// the error codes indicate a failure that prevents normal operation
+// led flash codes - the quad will not fly / bind if flashing a code
+// 2 - low battery at powerup - if enabled by config.h "#define STOP_LOWBATTERY" 
+// 3 - radio chip not found
+// 4 - Gyro not found - maybe i2c speed
+// 5 - clock , intterrupts , systick - this should not come up
+// 6 - loop time issue - if loop time exceeds 20mS
+// 7 - i2c error  - triggered by hardware i2c driver only
+// 8 - i2c error main loop  - triggered by hardware i2c driver only
+
+//GYRO ORIENTATION CHOICES
+// gyro orientation
+// the expected orientation is with the dot in the front-left corner
+// use this to rotate to the correct orientation 
+// rotations performed in order
+// note, the motors don't get rotated,
+// so they have to be referenced to the new gyro position
+// FOR EXAMPLE:
+// If the board is rotated clockwise 45 degrees, use define SENSOR_ROTATE_45_CCW 
+
+//define SENSOR_ROTATE_45_CCW
+//define SENSOR_ROTATE_45_CW
+//define SENSOR_ROTATE_90_CW
+//define SENSOR_ROTATE_90_CCW
+//define SENSOR_ROTATE_180
+//define SENSOR_FLIP_180
 
 // HARDWARE PINS SETTING
 //
@@ -23,33 +45,14 @@
 // do not set PA13 , PA14 (stm32f031) as this will break the programming interface
 // to disable led pins set number to zero
 
-// the error codes indicate a failure that prevents normal operation
-// led flash codes - the quad will not fly / bind if flashing a code
-// 2 - low battery at powerup - if enabled by config.h "#define STOP_LOWBATTERY" 
-// 3 - radio chip not found
-// 4 - Gyro not found - maybe i2c speed
-// 5 - clock , intterrupts , systick - this should not come up
-// 6 - loop time issue - if loop time exceeds 20mS
-// 7 - i2c error  - triggered by hardware i2c driver only
-// 8 - i2c error main loop  - triggered by hardware i2c driver only
 
+//ADC scalefactor explained by Ian444
+//As mcRich implied the scalefactor needs to be adjusted slightly for each board if you want exact voltages. I usually tune the scalefactor using the voltage readout via telemetry on a Devo. 
+//I’m not sure if the Taranis displays the voltage, but if it can, here is how to do it.
+//Say voltage of batt is 4.03V and the tx displays 4.09V. Get the calculator out, 4.03/4.09 x 0.001364 = 0.001344, so set 0.001344 for scalefactor.
+//So to summarise:(actual batt voltage/reported batt voltage) x current scalefactor = new scalefactor
 
-//Gyro orientation choices
-// gyro orientation
-// the expected orientation is with the dot in the front-left corner
-// use this to rotate to the correct orientation 
-// rotations performed in order
-// note, the motors don't get rotated,
-// so they have to be referenced to the new gyro position
-//Gyro orientation choices found in miscellaneous.c 
-
-//define SENSOR_ROTATE_45_CCW
-//define SENSOR_ROTATE_45_CW
-//define SENSOR_ROTATE_90_CW
-//define SENSOR_ROTATE_90_CCW
-//define SENSOR_ROTATE_180
-//define SENSOR_FLIP_180
-
+//unused gyro filters
 // gyro filter 4 = 20hz
 // gyro filter 5 = 10hz
 // gyro filter 6 = 5hz

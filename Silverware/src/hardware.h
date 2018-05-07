@@ -1,4 +1,5 @@
-// Hardware pin settings information in miscellaneaous.c
+// HARDWARE PIN SETTINGS INFORMATION IN MISCELLANEAOUS.C
+//***LED FLASH ERROR CODES ARE FOUND IN MISCELLANEAOUS.C
 
 //**********************************************************************************************************************
 //***********************************************BOARD SELECTION********************************************************
@@ -61,6 +62,9 @@
 
 // disable lvc functions
 //#define DISABLE_LVC
+
+// gyro orientation if board is rotated in a non-default orientation
+// GYRO ORIENTATION CHOICES DISPLAYED IN MISCELLANEAOUS.C - place define below
 
 // disable the check for known gyro that causes the 4 times flash
 //#define DISABLE_GYRO_CHECK
