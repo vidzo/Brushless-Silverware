@@ -158,7 +158,8 @@
 
 // *************makes throttle feel more poppy - can intensify small throttle imbalances visible in FPV if factor is set too high
 //#define THROTTLE_TRANSIENT_COMPENSATION 
-//#define THROTTLE_TRANSIENT_COMPENSATION_FACTOR 4.0 
+// if the quad resets , or for brushless ,try a lower value
+//#define THROTTLE_TRANSIENT_COMPENSATION_FACTOR 7.0 
 
 // *************mix lower throttle reduces thrust imbalances by reducing throttle proportionally to the adjustable reduction percent
 // *************mix increase throttle increases the authority of the pid controller at lowest throttle values like airmode when combined with idle up
@@ -168,7 +169,7 @@
 //#define MIX_INCREASE_THROTTLE
 
 //#define MIX_LOWER_THROTTLE_3
-#define MIX_INCREASE_THROTTLE_3
+//#define MIX_INCREASE_THROTTLE_3
 
 // *************throttle angle compensation in level mode
 //#define AUTO_THROTTLE
@@ -241,7 +242,7 @@
 // *************This define will override the stick gesture controlled aux channel and allow you to check if your radio is reaching 100% throws
 // *************entering <RIGHT-RIGHT-DOWN> gesture will disable throttle and will rapid blink the led when sticks are moved to 100% throws
 // *************entering <LEFT-LEFT-DOWN> will return the quad to normal operation.
-#define STICK_TRAVEL_CHECK
+//#define STICK_TRAVEL_CHECK
 
 
 //#############################################################################################################################
