@@ -316,10 +316,11 @@ if ( frame_received )
 	rx[2] = rcexpo ( rx[2] , EXPO_YAW ); 	
 #endif
         
-        aux[CH_FLIP] = (channels[5] > 993) ? 1 : 0;
-		aux[CH_EXPERT] = (channels[6] > 993) ? 1 : 0;
-		aux[CH_HEADFREE] = (channels[7] > 993) ? 1 : 0;
-		aux[CH_RTH] = (channels[8] > 993) ? 1 : 0;
+			aux[CHAN_5] = (channels[4] > 993) ? 1 : 0;
+		    aux[CHAN_6] = (channels[5] > 993) ? 1 : 0;
+		    aux[CHAN_7] = (channels[6] > 993) ? 1 : 0;
+		    aux[CHAN_8] = (channels[7] > 993) ? 1 : 0;
+			aux[CHAN_9] = (channels[8] > 993) ? 1 : 0;
         
         time_lastframe = gettime(); 
         if (sbus_stats) stat_frames_accepted++;       
