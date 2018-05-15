@@ -199,7 +199,7 @@ char rfchannel[4];
 int rxaddress[5];
 int rxmode = 0;
 int rf_chan = 0;
-
+int rx_state = 0;
 
 
 
@@ -593,7 +593,7 @@ void checkrx(void)
                   }
 
             } // end normal rx mode
-
+                       				rx_state = 1;
       } // end packet received
 
 // finish sending if already started

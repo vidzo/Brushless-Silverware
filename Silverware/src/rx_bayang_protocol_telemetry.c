@@ -72,6 +72,7 @@ char rfchannel[4];
 int rxaddress[5];
 int rxmode = 0;
 int rf_chan = 0;
+int rx_state = 0;
 
 
 
@@ -524,7 +525,7 @@ void checkrx(void)
                       failcount++;
 #endif
                   }
-
+                                          							rx_state = 1;
             }                   // end normal rx mode
 
       }                         // end packet received
