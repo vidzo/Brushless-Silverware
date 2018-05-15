@@ -168,7 +168,7 @@
 //#define MIX_INCREASE_THROTTLE
 
 //#define MIX_LOWER_THROTTLE_3
-//#define MIX_INCREASE_THROTTLE_3
+#define MIX_INCREASE_THROTTLE_3
 
 // *************throttle angle compensation in level mode
 //#define AUTO_THROTTLE
@@ -236,6 +236,12 @@
 // throttle direct to motors for thrust measure
 //#define MOTORS_TO_THROTTLE
 //#define MOTORS_TO_THROTTLE_MODE MULTI_CHAN_8
+
+// *************SPECIAL TEST MODE TO CHECK TRANSMITTER STICK THROWS
+// *************This define will override the stick gesture controlled aux channel and allow you to check if your radio is reaching 100% throws
+// *************entering <RIGHT-RIGHT-DOWN> gesture will disable throttle and will rapid blink the led when sticks are moved to 100% throws
+// *************entering <LEFT-LEFT-DOWN> will return the quad to normal operation.
+#define STICK_TRAVEL_CHECK
 
 
 //#############################################################################################################################
