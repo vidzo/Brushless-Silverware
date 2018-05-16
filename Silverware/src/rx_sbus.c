@@ -5,7 +5,8 @@
 #include "drv_serial.h"
 #include "config.h"
 #include "drv_time.h"
-
+#include "defines.h"
+#include "util.h"
 
 // sbus input ( pin SWCLK after calibration) 
 // WILL DISABLE PROGRAMMING AFTER GYRO CALIBRATION - 2 - 3 seconds after powerup)

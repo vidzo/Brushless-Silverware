@@ -536,7 +536,7 @@ void checkrx(void)
                   }
             }
           else
-            {               // normal mode
+
             {                   // normal mode  
 #ifdef RXDEBUG
                 channelcount[rf_chan]++;
@@ -650,3 +650,4 @@ void checkrx(void)
 
 
 #endif
+
