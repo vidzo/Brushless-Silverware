@@ -34,15 +34,11 @@ THE SOFTWARE.
 
 #include "drv_i2c.h"
 
-
 #include <math.h>
 #include <stdio.h>
 #include <inttypes.h>
 
-
 #include "debug.h"
-
-
 
 // this works only on newer boards (non mpu-6050)
 // on older boards the hw gyro setting controls the acc as well
@@ -50,7 +46,7 @@ THE SOFTWARE.
 
 extern debug_type debug;
 uint8_t i2c_rx_buffer[14];
-volatile uint16_t i2c_dma_phase = 0;	
+volatile uint16_t i2c_dma_phase = 0;			//	0:idel	1:delay is counting	2:DMA triggered	
 
 // temporary fix for compatibility between versions
 #ifndef GYRO_ID_1 
@@ -84,6 +80,7 @@ void sixaxis_init( void)
     delay(100);
 	
 	i2c_writereg(  28, B00011000);	// 16G scale
+	i2c_writereg(  25, B00000000);	// Sample Rate = Gyroscope Output Rate
 
     
 // acc lpf for the new gyro type
@@ -97,23 +94,27 @@ void sixaxis_init( void)
 // Gyro DLPF low pass filter
 
 	i2c_writereg( 26 , GYRO_LOW_PASS_FILTER);
-	
-		//// Debug ////
-	GPIO_InitTypeDef  GPIO_InitStructure;
-
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	
-	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-	GPIO_Init( GPIOA, &GPIO_InitStructure );
-	/////////////////
-	
 		
 #ifdef SIXAXIS_READ_DMA
-#define SIXAXIS_READ_TIME			(  SYS_CLOCK_FREQ_HZ/400000 * 8 * (14+1+10) )
-#define SIXAXIS_READ_PERIOD		( (SYS_CLOCK_FREQ_HZ * ((LOOPTIME-40)*1e-6f))-SIXAXIS_READ_TIME )
+	#ifndef USE_HARDWARE_I2C
+		#warning "I2C DMA must use Hardware I2C"
+	#endif
+	
+	#if defined(ENABLE_OVERCLOCK) && !(defined(HW_I2C_SPEED_FAST_OC) || defined(HW_I2C_SPEED_FAST2_OC) )
+ 		#warning "HW_I2C_SPEED_FAST(2)_OC not set"
+	#endif
+	
+	#if !defined(ENABLE_OVERCLOCK) && !(defined(HW_I2C_SPEED_FAST) || defined(HW_I2C_SPEED_FAST2) )
+ 		#warning "HW_I2C_SPEED_FAST(2) not set"
+	#endif
+	
+	#if	defined(HW_I2C_SPEED_FAST2) || defined(HW_I2C_SPEED_FAST2_OC)
+		#define	SIXAXIS_READ_TIME	280			// 270us + 10us as a tolerance
+	#else
+		#define SIXAXIS_READ_TIME	510			// 500us + 10us as a tolerance
+	#endif	
+	
+	#define SIXAXIS_READ_PERIOD		( (SYS_CLOCK_FREQ_HZ * ((LOOPTIME-SIXAXIS_READ_TIME)*1e-6f)) )
 
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
@@ -162,23 +163,14 @@ void sixaxis_init( void)
 #endif	
 }
 
-extern int hw_i2c_sendheader( int, int );
-// normal output mode
-#define gpioset( port , pin) port->BSRR = pin
-#define gpioreset( port , pin) port->BRR = pin
-
 #ifdef SIXAXIS_READ_DMA
-extern int hw_i2c_sendheader(int,int);
+extern int hw_i2c_sendheader( int, int );
 
 void TIM17_IRQHandler(void)
 {	
-	gpioset( GPIOA , GPIO_Pin_3 );
-
 	TIM_Cmd( TIM17, DISABLE );
 	TIM_ClearITPendingBit( TIM17, TIM_IT_Update );
 
-
-	DMA_Cmd( DMA1_Channel3, DISABLE );
 	DMA_ClearFlag( DMA1_FLAG_GL3 );
 	DMA1_Channel3->CNDTR = 14;
 	
@@ -189,9 +181,7 @@ void TIM17_IRQHandler(void)
 	DMA_Cmd( DMA1_Channel3, ENABLE );
   I2C_DMACmd( I2C1, I2C_DMAReq_Rx, ENABLE );
 	
-	i2c_dma_phase = 1;
-	
-	gpioreset( GPIOA , GPIO_Pin_3 );
+	i2c_dma_phase = 2;
 }
 #endif
 
@@ -228,26 +218,28 @@ void sixaxis_read(void)
 		TIM_SetCounter( TIM17, SIXAXIS_READ_PERIOD );
 		TIM_Cmd( TIM17, ENABLE );	
 		i2c_dma_phase = 1;
+		while( !DMA_GetFlagStatus( DMA1_FLAG_TC3 ) ) { };
 	}
 	
-	gpioset( GPIOA , GPIO_Pin_3 );
-	while( !DMA_GetFlagStatus( DMA1_FLAG_TC3 ) ){};
+	//if DMA not ready, SIXAXIS_READ_TIME should be larger and make less delay for trigger DMA
+	extern void failloop(int);
+	uint32_t	time=gettime();
+	while( !DMA_GetFlagStatus( DMA1_FLAG_TC3 ) && (gettime()-time) < LOOPTIME ) { } 	// wait maximum a LOOPTIME for I2C DMA to complete
+	while( !DMA_GetFlagStatus( DMA1_FLAG_TC3 ) ) {
+					failloop(9);
+		}
   DMA_Cmd( DMA1_Channel3, DISABLE );
   I2C_DMACmd( I2C1, I2C_DMAReq_Rx, DISABLE );
-	i2c_dma_phase = 0;
-	gpioreset( GPIOA , GPIO_Pin_3 );
+	//i2c_dma_phase = 0;
 		
 	// delayed trigger next DMA by TIM17			
 	TIM_SetCounter( TIM17, 0 );
 	TIM_Cmd( TIM17, ENABLE );
-		i2c_dma_phase = 1;
+	i2c_dma_phase = 1;
 #else
-	int data[14];
+	int data[14];		
 		
-	gpioset( GPIOA , GPIO_Pin_3 );	
-	i2c_readdata( 59 , data , 14 );
-	gpioreset( GPIOA , GPIO_Pin_3 );
-		
+	i2c_readdata( 59 , data , 14 );		
 	for( int i=0;i<14;i++) i2c_rx_buffer[i] = (uint8_t)data[i];	
 #endif		
 	

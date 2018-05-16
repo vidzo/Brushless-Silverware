@@ -102,13 +102,15 @@
 	#define DSHOT_DMA_PHASE	1												// motor pins all at portA
 #endif
 
+#define DMA_WAIT_TIME		LOOPTIME
+
 extern int failsafe;
 extern int onground;
 
 int pwmdir = 0;
 static unsigned long pwm_failsafe_time = 1;
 
-volatile uint16_t dshot_dma_phase = 0;						// 1:portA  2:portB	 0:idle
+volatile int dshot_dma_phase = 0;									// 1:portA  2:portB	 0:idle
 volatile uint16_t dshot_packet[4];								// 16bits dshot data for 4 motors
 
 volatile uint16_t motor_data_portA[ 16 ] = { 0 };	// DMA buffer: reset output when bit data=0 at TOH timing
@@ -153,6 +155,9 @@ void pwm_init()
 
 	GPIO_InitStructure.GPIO_Pin = DSHOT_PIN_3 ;
 	GPIO_Init( DSHOT_PORT_3, &GPIO_InitStructure );
+	
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3 ;
+	GPIO_Init( GPIOA, &GPIO_InitStructure );
 	
 	if( DSHOT_PORT_0 == GPIOA )	*dshot_portA |= DSHOT_PIN_0;
 	else												*dshot_portB |= DSHOT_PIN_0;
@@ -318,24 +323,6 @@ void dshot_dma_portB()
 	TIM_Cmd( TIM1, ENABLE );
 }
 
-
-void DMA1_Channel4_5_IRQHandler(void)
-{	
-	DMA_Cmd(DMA1_Channel5, DISABLE);
-	DMA_Cmd(DMA1_Channel2, DISABLE);
-	DMA_Cmd(DMA1_Channel4, DISABLE);		
-	
-	TIM_DMACmd(TIM1, TIM_DMA_Update | TIM_DMA_CC4 | TIM_DMA_CC1, DISABLE);
-	
-	DMA_ClearITPendingBit(DMA1_IT_TC4);		
-	
-	TIM_Cmd( TIM1, DISABLE );
-	
-	if( --dshot_dma_phase == 1 ) {
-		dshot_dma_portB();	
-	}	
-}
-
 // make dshot packet
 void make_packet( uint8_t number, uint16_t value, bool telemetry )
 {
@@ -357,7 +344,29 @@ void make_packet( uint8_t number, uint16_t value, bool telemetry )
 // make dshot dma packet, then fire
 void dshot_dma_start()
 {
-	if( dshot_dma_phase != 0 ) return;
+	uint32_t	time=gettime();
+	while( dshot_dma_phase != 0 && (gettime()-time) < DMA_WAIT_TIME ) { } // wait maximum a LOOPTIME for dshot dma to complete
+	if( dshot_dma_phase != 0 ) return;																		// skip this dshot command
+	
+#if	defined(RGB_LED_DMA) && (RGB_LED_NUMBER>0)
+	/// terminate current RGB transfer
+	extern int	rgb_dma_phase;
+	
+	time=gettime();
+	while( rgb_dma_phase ==1 && (gettime()-time) < DMA_WAIT_TIME ) { } 	// wait maximum a LOOPTIME for RGB dma to complete
+	
+	if( rgb_dma_phase ==1 ) {																						// terminate current RGB dma transfer, proceed dshot 
+		rgb_dma_phase =0;
+		DMA_Cmd(DMA1_Channel5, DISABLE);
+		DMA_Cmd(DMA1_Channel2, DISABLE);
+		DMA_Cmd(DMA1_Channel4, DISABLE);		
+	
+		TIM_DMACmd(TIM1, TIM_DMA_Update | TIM_DMA_CC4 | TIM_DMA_CC1, DISABLE);	
+		TIM_Cmd( TIM1, DISABLE );
+		extern void failloop();
+		failloop(9);
+	}	
+#endif		
 		
 		// generate dshot dma packet
 	for ( uint8_t i = 0; i < 16; i++ ) {
@@ -383,8 +392,13 @@ void dshot_dma_start()
 	  dshot_packet[3] <<= 1;
 	}	
 	
-		dshot_dma_phase = DSHOT_DMA_PHASE;	
-		dshot_dma_portA();
+	dshot_dma_phase = DSHOT_DMA_PHASE;	
+		
+	TIM1->ARR 	= DSHOT_BIT_TIME;
+	TIM1->CCR1 	= DSHOT_T0H_TIME;
+	TIM1->CCR4 	= DSHOT_T1H_TIME;
+	
+	dshot_dma_portA();
 }
 
 void pwm_set( uint8_t number, float pwm )
@@ -495,5 +509,50 @@ void motorbeep()
 		motor_beep_time = 0;
 	}
 }
+
+
+#if defined(USE_DSHOT_DMA_DRIVER) || ( defined(RGB_LED_DMA) && (RGB_LED_NUMBER>0) )
+
+void DMA1_Channel4_5_IRQHandler(void)
+{	
+	DMA_Cmd(DMA1_Channel5, DISABLE);
+	DMA_Cmd(DMA1_Channel2, DISABLE);
+	DMA_Cmd(DMA1_Channel4, DISABLE);		
+	
+	TIM_DMACmd(TIM1, TIM_DMA_Update | TIM_DMA_CC4 | TIM_DMA_CC1, DISABLE);
+	DMA_ClearITPendingBit(DMA1_IT_TC4);		
+	TIM_Cmd( TIM1, DISABLE );
+	
+#ifdef USE_DSHOT_DMA_DRIVER
+	switch( dshot_dma_phase ) {
+		case 2:
+			dshot_dma_phase =1;
+			dshot_dma_portB();
+			return;
+		case 1:
+			dshot_dma_phase =0;
+			#if defined(RGB_LED_DMA) && (RGB_LED_NUMBER>0)
+				extern int rgb_dma_phase;
+				extern void rgb_dma_trigger();
+		
+				if( rgb_dma_phase == 2 ) {
+					rgb_dma_phase = 1;
+					rgb_dma_trigger();						
+				}
+			#endif
+			return;
+		default :
+			dshot_dma_phase =0;
+			break;		
+	}
+#endif
+	
+#if defined(RGB_LED_DMA) && (RGB_LED_NUMBER>0)	
+	extern int rgb_dma_phase;
+	rgb_dma_phase = 0;
+#endif
+	
+}
+#endif
 
 #endif
