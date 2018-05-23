@@ -50,8 +50,8 @@ const float outlimit[PIDNUMBER] = { 0.6 , 0.6 , 0.3 };
 const float integrallimit[PIDNUMBER] = { 0.6 , 0.6 , 0.3 };
 
 //#define RECTANGULAR_RULE_INTEGRAL
-//#define MIDPOINT_RULE_INTEGRAL
-#define SIMPSON_RULE_INTEGRAL
+#define MIDPOINT_RULE_INTEGRAL
+//#define SIMPSON_RULE_INTEGRAL
 
 //#define ANTI_WINDUP_DISABLE
 
