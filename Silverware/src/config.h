@@ -94,6 +94,9 @@
 // *************Voltage compensation to increase handling at low battery
 //#define PID_VOLTAGE_COMPENSATION
 
+// Removes roll and pitch bounce back after flips
+//#define TRANSIENT_WINDUP_PROTECTION
+
 
 //**********************************************************************************************************************
 //***********************************************FILTER SETTINGS********************************************************
