@@ -33,14 +33,13 @@ static __INLINE uint32_t SysTick_Config2(uint32_t ticks)
 
 void time_init()
 {
-
 	  if (SysTick_Config2( SYS_CLOCK_FREQ_HZ /8 ))
     {// not able to set divider
 			  failloop(5);
-        while (1);
     }
 }
 
+// return time in uS from start ( micros())
 // called at least once per 16ms or time will overflow
 unsigned long time_update(void)
 {

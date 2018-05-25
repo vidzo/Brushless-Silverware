@@ -129,11 +129,13 @@ int ledblink = 0;
 unsigned long ledcommandtime = 0;
 
 void failloop( int val);
+
+int random_seed = 0;
 #ifdef USE_SERIAL_4WAY_BLHELI_INTERFACE
 volatile int switch_to_4way = 0;
 static void setup_4way_external_interrupt(void);
 #endif									   
-int random_seed = 0;
+
 
 int main(void)
 {
@@ -529,6 +531,7 @@ rgb_led_lvc( );
         }
     }
 #endif
+		
 #ifdef USE_SERIAL_4WAY_BLHELI_INTERFACE
 		extern int onground;
 		if (onground)
