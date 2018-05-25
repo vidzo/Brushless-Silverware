@@ -192,7 +192,7 @@
 // *************calculate above factor automatically
 #define AUTO_VDROP_FACTOR
 
-// *************voltage hysteresys in volts
+// *************voltage hysteresis in volts
 #define HYST 0.10
 
 
@@ -271,7 +271,7 @@
 // failsafe time in uS
 #define FAILSAFETIME 1000000  // one second
 
-// *************lower throttle when battery below treshold - forced landing low voltage cutoff
+// *************lower throttle when battery below threshold - forced landing low voltage cutoff
 //#define LVC_LOWER_THROTTLE
 #define LVC_LOWER_THROTTLE_VOLTAGE 3.30
 #define LVC_LOWER_THROTTLE_VOLTAGE_RAW 2.70
