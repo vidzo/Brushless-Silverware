@@ -613,6 +613,11 @@
               <FilePath>.\src\serial_4way.c</FilePath>
             </File>
             <File>
+              <FileName>serial_4way_impl.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\serial_4way_impl.h</FilePath>
+            </File>
+            <File>
               <FileName>serial_4way_stk500v2.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\serial_4way_stk500v2.c</FilePath>
