@@ -239,7 +239,7 @@
 //#define NOMOTORS
 // throttle direct to motors for thrust measure
 //#define MOTORS_TO_THROTTLE
-//#define MOTORS_TO_THROTTLE_MODE MULTI_CHAN_8
+//#define MOTORS_TO_THROTTLE_MODE CHAN_8
 
 // *************SPECIAL TEST MODE TO CHECK TRANSMITTER STICK THROWS
 // *************This define will override the stick gesture controlled aux channel and allow you to check if your radio is reaching 100% throws
