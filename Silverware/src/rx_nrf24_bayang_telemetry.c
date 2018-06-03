@@ -593,7 +593,7 @@ void checkrx(void)
                   }
 
             } // end normal rx mode
-                       				rx_state = 1;
+
       } // end packet received
 
 // finish sending if already started
