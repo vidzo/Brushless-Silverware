@@ -80,6 +80,8 @@
 #define CHAN_8 CH_VID
 #define CHAN_9 CH_HEADFREE
 #define CHAN_10 CH_RTH
+#define CHAN_11 CH_TO
+#define CHAN_12 CH_EMG
 #define CHAN_ON CH_ON
 #define CHAN_OFF CH_OFF
 #endif
@@ -92,6 +94,8 @@
 #define CHAN_8 CH_VID
 #define CHAN_9 CH_HEADFREE
 #define CHAN_10 CH_INV
+#define CHAN_11 CH_TO
+#define CHAN_12 CH_EMG
 #define CHAN_ON CH_ON
 #define CHAN_OFF CH_OFF
 #endif
