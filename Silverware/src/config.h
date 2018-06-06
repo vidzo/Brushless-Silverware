@@ -68,6 +68,10 @@
 //#define IDLE_UP CHAN_5
 //#define IDLE_THR 0.05f
 
+//Throttle must drop below this value if arming feature is enabled for arming to take place.  MIX_INCREASE_THROTTLE_3 if enabled
+//will also not activate on the ground untill this threshold is passed during takeoff for safety and better staging behavior.
+//#define THROTTLE_SAFETY .10f
+
 // *************automatically remove center bias in toy tx ( needs throttle off for 1 second )
 //#define STOCK_TX_AUTOCENTER
 // *************start in level mode for toy tx.
@@ -213,7 +217,6 @@
 // *************voltage hysteresis in volts
 #define HYST 0.10
 
-
 //**********************************************************************************************************************
 //****************************************************MISC SETTINGS*****************************************************
 
@@ -259,11 +262,26 @@
 //#define MOTORS_TO_THROTTLE
 //#define MOTORS_TO_THROTTLE_MODE CHAN_8
 
+//**********************************************************************************************************************
+//***********************************************BETA TESTING ON STICK GESTURE******************************************
+// *************DEFINE ONLY ONE OPTION FROM THIS SECTION
+// *************This is a new section that will allow certain beta testing features to be activated by the stick gesture
+// *************auxillary channel.  Even when defined - the quad will power up with these features off.  To activate -  
+// *************use the following stick gesture on the pitch/roll stick RIGHT-RIGHT-DOWN (leds will blink). To deactivate - 
+// *************stick gesture LEFT-LEFT-DOWN.  Please test the features you are interested in below and give feedback!!!
+
 // *************SPECIAL TEST MODE TO CHECK TRANSMITTER STICK THROWS
-// *************This define will override the stick gesture controlled aux channel and allow you to check if your radio is reaching 100% throws
-// *************entering <RIGHT-RIGHT-DOWN> gesture will disable throttle and will rapid blink the led when sticks are moved to 100% throws
+// *************This define will allow you to check if your radio is reaching 100% throws entering <RIGHT-RIGHT-DOWN> gesture
+// ************* will disable throttle and will rapid blink the led when sticks are moved to 100% throws
 // *************entering <LEFT-LEFT-DOWN> will return the quad to normal operation.
 //#define STICK_TRAVEL_CHECK
+
+// *************SPECIAL TEST MODE TO CHANGE D TERM CALCULATION TO ERROR INSTEAD OF MEASUREMENT
+// *************This define will enable you to change the calculation of the PID's D term to track both sticks and gyro (error method)
+// *************instead of just gyro (measurement method).  The quad will start up using the measurement calculation.  Entering 
+// *************RIGHT-RIGHT-DOWN will change over to the error type D calculation.  LEFT-LEFT-DOWN will change back to measurement. Only works with 
+//DTERM_LPF_2ND
+#define ERROR_D_TERM
 
 
 //#############################################################################################################################
@@ -314,10 +332,6 @@
 
 #pragma diag_warning 1035 , 177 , 4017
 #pragma diag_error 260
-
-//Throttle must drop below this value if arming feature is enabled for arming to take place.  MIX_INCREASE_THROTTLE_3 if enabled
-//will also not activate on the ground untill this threshold is passed during takeoff for safety and better staging behavior.
-//#define THROTTLE_SAFETY .10f
 
 
 // define logic - do not change
