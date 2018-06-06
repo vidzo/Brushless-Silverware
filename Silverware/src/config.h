@@ -281,7 +281,7 @@
 // *************instead of just gyro (measurement method).  The quad will start up using the measurement calculation.  Entering 
 // *************RIGHT-RIGHT-DOWN will change over to the error type D calculation.  LEFT-LEFT-DOWN will change back to measurement. Only works with 
 //DTERM_LPF_2ND
-#define ERROR_D_TERM
+//#define ERROR_D_TERM
 
 
 //#############################################################################################################################
