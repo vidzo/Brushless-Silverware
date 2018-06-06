@@ -54,8 +54,13 @@
 // *************EXPO from 0.00 to 1.00 , 0 = no exp
 // *************positive = less sensitive near center 
 #define DISABLE_EXPO
-#define EXPO_XY 0.8
-#define EXPO_YAW 0.6
+#define ACRO_EXPO_ROLL 0.80
+#define ACRO_EXPO_PITCH 0.80
+#define ACRO_EXPO_YAW 0.60
+
+#define ANGLE_EXPO_ROLL 0.35
+#define ANGLE_EXPO_PITCH 0.0
+#define ANGLE_EXPO_YAW 0.35
 
 //*************Idle up-Arm switch
 //************* idle up will behave like betaflight airmode, comment out to disable
