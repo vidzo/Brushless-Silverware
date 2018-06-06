@@ -106,7 +106,16 @@
 //**********************************************************************************************************************
 //***********************************************FILTER SETTINGS********************************************************
 
+// *************Select the appropriate filtering set for your craft's gyro, D-term, and motor output or select CUSTOM_FILTERING to pick your own values.  
+// *************If your throttle does not want to drop crisply and quickly when you lower the throttle stick, then move to a stronger filter set
 
+//#define WEAK_FILTERING
+//#define STRONG_FILTERING
+#define VERY_STRONG_FILTERING
+//#define CUSTOM_FILTERING
+
+
+#ifdef CUSTOM_FILTERING
 // *************gyro low pass filter ( iir )
 // *************set only one below - kalman, 1st order, or second order - and adjust frequency
 //**************ABOVE 100 ADJUST IN INCRIMENTS OF 20, BELOW 100 ADJUST IN INCRIMENTS OF 10
@@ -139,12 +148,13 @@
 //#define NORMAL_DTERM
 #define NEW_DTERM
 //#define MAX_FLAT_LPF_DIFF_DTERM
+#endif
 
 
 //**********************************************************************************************************************
 //***********************************************MOTOR OUTPUT SETTINGS**************************************************
 
-
+#ifdef CUSTOM_FILTERING
 // *************enable motor output filter - select and adjust frequency
 // motorfilter1: hanning 3 sample fir filter
 // motorfilter2: 1st lpf, 0.2 - 0.6 , 0.6 = less filtering
@@ -152,6 +162,8 @@
 //#define MOTOR_KAL KAL1_HZ_70
 //#define MOTOR_FILTER
 //#define MOTOR_FILTER2_ALPHA 0.2
+#endif
+
 
 // *************clip feedforward attempts to resolve issues that occur near full throttle
 //#define CLIP_FF
@@ -317,4 +329,24 @@
 #define SYS_CLOCK_FREQ_HZ 48000000
 #endif
 
+#ifdef WEAK_FILTERING
+#define SOFT_KALMAN_GYRO KAL1_HZ_90
+#define  DTERM_LPF_2ND_HZ 100
+#define MOTOR_FILTER2_ALPHA MFILT1_HZ_90
+#define GYRO_LOW_PASS_FILTER 0
+#endif
+
+#ifdef STRONG_FILTERING
+#define SOFT_KALMAN_GYRO KAL1_HZ_80
+#define  DTERM_LPF_2ND_HZ 90
+#define MOTOR_FILTER2_ALPHA MFILT1_HZ_80
+#define GYRO_LOW_PASS_FILTER 0
+#endif
+
+#ifdef VERY_STRONG_FILTERING
+#define SOFT_KALMAN_GYRO KAL1_HZ_70
+#define  DTERM_LPF_2ND_HZ 80
+#define MOTOR_FILTER2_ALPHA MFILT1_HZ_70
+#define GYRO_LOW_PASS_FILTER 0
+#endif
 

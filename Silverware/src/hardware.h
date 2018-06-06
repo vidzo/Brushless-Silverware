@@ -235,4 +235,3 @@
 // Change this factor to get a correct battery voltage. 
 // Information on how to increase accuracy can be found in miscellaneous.c file
 #define ADC_SCALEFACTOR 0.001364
-
