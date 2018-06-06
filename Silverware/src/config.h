@@ -178,6 +178,7 @@
 
 //#define MIX_LOWER_THROTTLE_3
 //#define MIX_INCREASE_THROTTLE_3
+//#define MIX_THROTTLE_INCREASE_MAX 0.2f
 
 // *************throttle angle compensation in level mode
 //#define AUTO_THROTTLE
