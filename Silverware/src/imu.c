@@ -152,6 +152,28 @@ void imu_calc(void)
 	float accmag;
 
 	accmag = calcmagnitude(&accel[0]);
+		
+	#ifdef ACC_TELEMETRY
+		    static float accel2filt = 1.0;
+    lpf(&accel2filt, accel[2], FILTERCALC( 1000, 300000 ) );
+    extern int tel1;
+    static int max = 0;
+    static unsigned long maxtime =0;
+    unsigned long time = gettime();
+    tel1 = (accel2filt -GEstG[2])  * 2560;
+    if ( tel1 < 0 ) tel1 = 0;
+    if ( tel1 > max) 
+    {
+       max = tel1;
+       maxtime = time;
+    }
+
+    if ( max > 0 && time - maxtime > 6000000 )
+    {
+       max--; 
+    }
+    tel1 = max/256;
+#endif
 
 
 	if ((accmag > ACC_MIN * ACC_1G) && (accmag < ACC_MAX * ACC_1G) && !DISABLE_ACC)

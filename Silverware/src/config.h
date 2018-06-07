@@ -269,17 +269,23 @@
 //#define MOTORS_TO_THROTTLE
 //#define MOTORS_TO_THROTTLE_MODE CHAN_8
 
+// ------------- SIXAXIS DMA BETA
+#define GYRO_SYNC1 CHAN_OFF
+#define GYRO_SYNC2 CHAN_OFF
+#define GYRO_SYNC3 CHAN_OFF // works only when LEVELMODE off and not onground
+
+// ------------- Accelerometer telemetry which displays max G. 
+// ************* Units are G * 10 e.g readout of 60 is 6 G *above gravity* Gravity not included. 
+// ************* The value is in the rx reception field, only even numbers displayed. Value is held for 6 seconds
+// ************* Only works with bayang_protocol_telemetry, bayang_protocol_telemetry_autobind and nrf24_bayang_telemetry
+//#define ACC_TELEMETRY
+
 //**********************************************************************************************************************
 //********************************************************BETA TESTING**************************************************
 // *************This is a new section that will allow certain beta testing features to be tested, some activated by the stick gesture
 // *************auxillary channel. Those features, if defined with stick gestures - the quad will power up with these features off.  To activate -  
 // *************use the following stick gesture on the pitch/roll stick RIGHT-RIGHT-DOWN (leds will blink). To deactivate - 
 // *************stick gesture LEFT-LEFT-DOWN. Other features are defined by CHAN. Please test the features you are interested in below and give feedback!!!
-
-// ------------- SIXAXIS DMA BETA
-#define GYRO_SYNC1 CHAN_OFF
-#define GYRO_SYNC2 CHAN_OFF
-#define GYRO_SYNC3 CHAN_OFF // works only when LEVELMODE off and not onground
 
 // ------------- SPECIAL TEST MODE TO CHECK TRANSMITTER STICK THROWS
 // ************* This define will allow you to check if your radio is reaching 100% throws entering <RIGHT-RIGHT-DOWN> gesture

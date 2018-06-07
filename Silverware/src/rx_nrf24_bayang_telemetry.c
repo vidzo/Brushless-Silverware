@@ -326,6 +326,10 @@ extern int lowbatt;
 extern float vbattfilt;
 extern float vbatt_comp;
 
+#ifdef ACC_TELEMETRY
+int tel1 = 0;
+#endif
+
 void send_telemetry()
 {
 
@@ -346,6 +350,11 @@ void send_telemetry()
     txdata[6] = vbatt & 0xff;
 
     int temp = packetpersecond / 2;
+	
+#ifdef ACC_TELEMETRY	
+  temp = tel1/2;
+#endif
+	
     if (temp > 255)
         temp = 255;
 
