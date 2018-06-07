@@ -93,8 +93,9 @@
 #define PIDKD2  { 1.00e-1 , 1.00e-1 , 0.0e-1 }
 
 // ************* Enables use of stick accelerator and stick transition for d term lpf 1 & 2
+// ************* define PIDPROFILE CHAN For switching stickAccelerator & stickTransition profiles on pid.c page
 //#define ADVANCED_PID_CONTROLLER
-//#define PIDPROFILE CHAN_9
+//#define PIDPROFILE CHAN_9                
 
 // ************* Invert yaw pid for "PROPS OUT" configuration
 //#define INVERT_YAW_PID

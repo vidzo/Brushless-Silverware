@@ -36,15 +36,31 @@ THE SOFTWARE.
 //**************************************************PIDS*************************************************
 //*******************************************************************************************************
 
-//**************************ADVANCED PID CONTROLLER*******************************
+//**************************ADVANCED PID CONTROLLER - WITH PROFILE SWITCHING ON AUX SWITCH PIDPROFILE******************************* 
+// GENERAL SUMMARY OF THIS FEATURE:
+// stickAccelerator and stickTransition are a more detailed version of the traditional D term setpoint weight and transition variables that you may be familiar with in other firmwares.
+// The difference here is that we name the D term setpoint weight "Stick Accelerator" because it's actual function is to accelerate the response of the pid controller to stick inputs.
+// Another difference is that negative stick transitions are possible meaning that you can have a higher stick acceleration near center stick which fades to a lower stick acceleration at
+// full stick throws should you desire to see what that feels like.  Traditionally we are only used to being able to transition from a low setpoint to a higher one.
+// The final differences are that you can adjust each axis independently and also set up two seperate profiles so that you can switch "feels" in flight with the PIDPROFILE aux
+// channel selection set up in the receiver section of config.h
+//
+//HOW TO USE THIS FEATURE:
+// Safe values for stickAccelerator are from 0 to about 2.5 where 0 represents a "MEASUREMENT" based D term calculation and is the traditional Silverware PID controller, and a
+// a value of 1 represents an "ERROR" based D term calculation.  Values above 1 add even more acceleration but be reasonable and keep this below about 2.5.
+ 
+// Range of acceptable values for stickTransition are from -1 to 1.  Do not input a value outside of this range.  When stick transition is 0 - no stick transition will take place
+// and stick acceleration will remain constant regardless of stick position.  Positive values up to 1 will represent a transition where stick acceleration at it's maximum at full
+// stick deflection and is reduced by whatever percentage you enter here at stick center.  For example accelerator at 1 and transition at .3 means that there will be 30% reduction 
+// of acceleration at stick center, and acceleration strength of 1 at full stick.
 
-//pid profile A											 Roll  PITCH  YAW
-float stickAcceleratorProfileA[3] = { 0.0 , 0.0 , 0.0};
-float stickTransitionProfileA[3]  = { 0.0 , 0.0 , 0.0}; 
+//pid profile A						 Roll  PITCH  YAW
+float stickAcceleratorProfileA[3] = { 0.0 , 0.0 , 0.0};           //keep values between 0 and 2.5
+float stickTransitionProfileA[3]  = { 0.0 , 0.0 , 0.0};           //keep values between -1 and 1
 
-//pid profile B											 Roll  PITCH  YAW
-float stickAcceleratorProfileB[3] = { 1.0 , 1.0 , 1.0};
-float stickTransitionProfileB[3]  = { 1.0 , 1.0 , 1.0};  
+//pid profile B						 Roll  PITCH  YAW
+float stickAcceleratorProfileB[3] = { 1.0 , 1.0 , 1.0};           //keep values between 0 and 2.5
+float stickTransitionProfileB[3]  = { 0.0 , 0.0 , 0.0};           //keep values between -1 and 1 
 
 //*********************************************Setpoint Weight*******************************************
 // "setpoint weighting" 0.0 - 1.0 where 1.0 = normal pid
