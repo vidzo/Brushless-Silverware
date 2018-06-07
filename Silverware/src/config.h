@@ -53,7 +53,6 @@
 
 // *************EXPO from 0.00 to 1.00 , 0 = no exp
 // *************positive = less sensitive near center 
-#define DISABLE_EXPO
 #define ACRO_EXPO_ROLL 0.80
 #define ACRO_EXPO_PITCH 0.80
 #define ACRO_EXPO_YAW 0.60
@@ -101,7 +100,8 @@
 //#define INVERT_YAW_PID
 
 // *************Voltage compensation to increase handling at low battery
-//#define PID_VOLTAGE_COMPENSATION
+#define PID_VOLTAGE_COMPENSATION
+#define LEVELMODE_PID_ATTENUATION 0.90f  //used to prevent oscillations in angle modes with pid_voltage_compensation enabled due to high pids
 
 // Removes roll and pitch bounce back after flips
 //#define TRANSIENT_WINDUP_PROTECTION

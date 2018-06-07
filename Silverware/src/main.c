@@ -297,9 +297,11 @@ if ( liberror )
 		control();
 
         // attitude calculations for level mode
+if (aux[LEVELMODE]){ 
  		extern void imu_calc(void);		
 		imu_calc();       
-      
+}   
+	
 // battery low logic
 
         // read acd and scale based on processor voltage
