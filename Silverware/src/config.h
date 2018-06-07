@@ -279,6 +279,7 @@
 // *************SIXAXIS DMA BETA
 #define GYRO_SYNC1 CHAN_OFF
 #define GYRO_SYNC2 CHAN_OFF
+#define GYRO_SYNC3 CHAN_OFF // works only when LEVELMODE off and not onground
 
 // *************SPECIAL TEST MODE TO CHECK TRANSMITTER STICK THROWS
 // *************This define will allow you to check if your radio is reaching 100% throws entering <RIGHT-RIGHT-DOWN> gesture
