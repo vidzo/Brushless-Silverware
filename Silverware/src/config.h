@@ -92,13 +92,16 @@
 #define PIDKI2  { 0.80e-1 , 0.80e-1 , 0.60e-1 }
 #define PIDKD2  { 1.00e-1 , 1.00e-1 , 0.0e-1 }
 
-// *************invert yaw pid for "PROPS OUT" configuration
+// ************* Enables use of stick accelerator and stick transition for d term lpf 1 & 2
+#define ADVANCED_PID_CONTROLLER
+
+// ************* Invert yaw pid for "PROPS OUT" configuration
 //#define INVERT_YAW_PID
 
-// Removes roll and pitch bounce back after flips
+// ************* Removes roll and pitch bounce back after flips
 //#define TRANSIENT_WINDUP_PROTECTION
 
-// *************Voltage compensation to increase handling at low battery
+// ************* Voltage compensation to increase handling at low battery
 // ************ Levelmode_PID_attenuation isused to prevent oscillations in angle modes with pid_voltage_compensation enabled due to high pids
 //#define PID_VOLTAGE_COMPENSATION
 //#define LEVELMODE_PID_ATTENUATION 0.90f
@@ -266,7 +269,6 @@
 
 //**********************************************************************************************************************
 //***********************************************BETA TESTING ON STICK GESTURE******************************************
-// *************DEFINE ONLY ONE OPTION FROM THIS SECTION
 // *************This is a new section that will allow certain beta testing features to be activated by the stick gesture
 // *************auxillary channel.  Even when defined - the quad will power up with these features off.  To activate -  
 // *************use the following stick gesture on the pitch/roll stick RIGHT-RIGHT-DOWN (leds will blink). To deactivate - 
@@ -277,13 +279,6 @@
 // ************* will disable throttle and will rapid blink the led when sticks are moved to 100% throws
 // *************entering <LEFT-LEFT-DOWN> will return the quad to normal operation.
 //#define STICK_TRAVEL_CHECK
-
-// *************SPECIAL TEST MODE TO CHANGE D TERM CALCULATION TO ERROR INSTEAD OF MEASUREMENT
-// *************This define will enable you to change the calculation of the PID's D term to track both sticks and gyro (error method)
-// *************instead of just gyro (measurement method).  The quad will start up using the measurement calculation.  Entering 
-// *************RIGHT-RIGHT-DOWN will change over to the error type D calculation.  LEFT-LEFT-DOWN will change back to measurement. Only works with 
-//DTERM_LPF_2ND
-//#define ERROR_D_TERM
 
 
 //#############################################################################################################################
