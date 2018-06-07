@@ -269,6 +269,7 @@ if ( liberror )
 		// gettime() needs to be called at least once per second 
 		unsigned long time = gettime(); 
 		looptime = ((uint32_t)( time - lastlooptime));
+		looptime = LOOPTIME;
 		if ( looptime <= 0 ) looptime = 1;
 		looptime = looptime * 1e-6f;
 		if ( looptime > 0.02f ) // max loop 20ms
@@ -562,7 +563,7 @@ rgb_led_lvc( );
 checkrx();
 
 
-while ( (gettime() - time) < LOOPTIME );	
+//while ( (gettime() - time) < LOOPTIME );	
 
 		
 	}// end loop
