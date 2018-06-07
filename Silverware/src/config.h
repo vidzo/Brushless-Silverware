@@ -277,8 +277,8 @@
 // *************stick gesture LEFT-LEFT-DOWN. Other features are defined by CHAN. Please test the features you are interested in below and give feedback!!!
 
 // *************SIXAXIS DMA BETA
-#define GYRO_SYNC1 CHAN_8
-#define GYRO_SYNC2 CHAN_9
+#define GYRO_SYNC1 CHAN_OFF
+#define GYRO_SYNC2 CHAN_OFF
 
 // *************SPECIAL TEST MODE TO CHECK TRANSMITTER STICK THROWS
 // *************This define will allow you to check if your radio is reaching 100% throws entering <RIGHT-RIGHT-DOWN> gesture

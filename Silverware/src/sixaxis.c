@@ -62,7 +62,6 @@ THE SOFTWARE.
 	
 	#if	defined(HW_I2C_SPEED_FAST2) || defined(HW_I2C_SPEED_FAST2_OC)
 		#define	SIXAXIS_READ_TIME		271
-		#define	GYRO_READ_TIME			152
 	#else
 		#define SIXAXIS_READ_TIME		500
 		#warning "*** Only 1Mbps supported ***"
@@ -70,16 +69,15 @@ THE SOFTWARE.
 
 	#define SIXAXIS_READ_PERIOD1			((1000-SIXAXIS_READ_TIME*2) * TICK1US)
 	#define SIXAXIS_READ_PERIOD2			((1000-SIXAXIS_READ_TIME*1) * TICK1US)
-	#define GYRO_READ_PERIOD					((1000-   GYRO_READ_TIME*1) * TICK1US)
 
-volatile uint16_t	i2c_dma_phase 				=	0;			//	0:data no ready	1:new data available
-volatile uint16_t	i2c_dma_count 				=	0;			//	0:read count, if 4 times the same data, force output
-volatile uint16_t	i2c_dma_phase_count		=	0;
-volatile uint8_t	i2c_rx_buffer_dma1[14];
-volatile uint8_t	i2c_rx_buffer_dma2[14];
-volatile uint8_t	i2c_rx_buffer_sync[6];
-volatile uint16_t	sixaxis_read_period		=	SIXAXIS_READ_PERIOD1;
-volatile float		sixaxis_read_period2	=	SIXAXIS_READ_PERIOD2;
+volatile uint16_t i2c_dma_phase =	0;			//	0:data no ready	1:new data available
+volatile uint16_t i2c_dma_count =	0;			//	0:read count, if 4 times the same data, force output
+volatile uint16_t i2c_dma_phase_count =	0;
+uint8_t i2c_rx_buffer_dma1[14];
+uint8_t i2c_rx_buffer_dma2[14];
+uint8_t i2c_rx_buffer_sync[6];
+uint16_t	sixaxis_read_period		=	SIXAXIS_READ_PERIOD1;
+float			sixaxis_read_period2	=	SIXAXIS_READ_PERIOD2;
 extern char aux[AUXNUMBER];
 extern int onground;
 #endif
@@ -218,36 +216,17 @@ void gyro_sync1()
 
 void gyro_sync2()
 { // from sync off to on, limit TIM17 to shorten sync time 	
-	if( sixaxis_read_period2>(SIXAXIS_READ_PERIOD2+TICK1US*3) || sixaxis_read_period2<(SIXAXIS_READ_PERIOD2-TICK1US*3) )
+	if( sixaxis_read_period2>(SIXAXIS_READ_PERIOD2+TICK1US*5) || sixaxis_read_period2<(SIXAXIS_READ_PERIOD2-TICK1US*5) )
 			sixaxis_read_period2 = SIXAXIS_READ_PERIOD2;
 	
 	if( i2c_dma_phase == 1) {			
-		if( sixaxis_read_period2 > (SIXAXIS_READ_PERIOD2-TICK1US*3) )
-				sixaxis_read_period2 -=  (float)0.01;
+		if( sixaxis_read_period2 > (SIXAXIS_READ_PERIOD2-TICK1US*5) )
+				sixaxis_read_period2 -=  (float)0.005;
 			
 		TIM17->ARR = sixaxis_read_period2-TICK1US*3;
 	
 	} else {
-		if( sixaxis_read_period2 < (SIXAXIS_READ_PERIOD2+TICK1US*3) )
-				sixaxis_read_period2 +=   50;
-
-		TIM17->ARR = sixaxis_read_period2+TICK1US*3;			
-	}
-}
-
-void gyro_sync3()
-{ // from sync off to on, limit TIM17 to shorten sync time 	
-	if( sixaxis_read_period2>(GYRO_READ_PERIOD+TICK1US*3) || sixaxis_read_period2<(GYRO_READ_PERIOD-TICK1US*3) )
-			sixaxis_read_period2 = GYRO_READ_PERIOD;
-	
-	if( i2c_dma_phase == 1) {			
-		if( sixaxis_read_period2 > (GYRO_READ_PERIOD-TICK1US*3) )
-				sixaxis_read_period2 -=  (float)0.01;
-			
-		TIM17->ARR = sixaxis_read_period2-TICK1US*3;
-	
-	} else {
-		if( sixaxis_read_period2 < (GYRO_READ_PERIOD+TICK1US*3) )
+		if( sixaxis_read_period2 < (SIXAXIS_READ_PERIOD2+TICK1US*5) )
 				sixaxis_read_period2 +=   50;
 
 		TIM17->ARR = sixaxis_read_period2+TICK1US*3;			
@@ -262,34 +241,35 @@ void DMA1_Channel2_3_IRQHandler(void)
 
 	// if onground, gyro is steady and often the same, sync will fail and the time will be limited at boundary
 	// if GYRO_SYNC off, TIM17 + read 14bytes one time in a loop	
-	if( !aux[GYRO_SYNC1] && !aux[GYRO_SYNC2] && (aux[LEVELMODE] || !aux[GYRO_SYNC3] || onground) ) {			
+	if( !aux[GYRO_SYNC1] && !aux[GYRO_SYNC2] ) {			
 		for( int i=0;i<14;i++ ) 
 			i2c_rx_buffer_dma2[i] = i2c_rx_buffer_dma1[i];
 		
+		sixaxis_read_period = (1000-SIXAXIS_READ_TIME-1)*TICK1US;
 		i2c_dma_phase = 2;
 		
-		TIM17->ARR = (1000-SIXAXIS_READ_TIME-1)*TICK1US;		
+		TIM17->ARR = sixaxis_read_period;			
 		sixaxis_read_start();
 		return;
 	}		
 	
 	i2c_dma_count++;
 	if( (i2c_rx_buffer_sync[0]==i2c_rx_buffer_dma1[8]) && (i2c_rx_buffer_sync[1]==i2c_rx_buffer_dma1[9]) && (i2c_rx_buffer_sync[2]==i2c_rx_buffer_dma1[10]) && (i2c_rx_buffer_sync[3]==i2c_rx_buffer_dma1[11]) && (i2c_rx_buffer_sync[4]==i2c_rx_buffer_dma1[12]) && (i2c_rx_buffer_sync[5]==i2c_rx_buffer_dma1[13]) ) {
-		if( aux[GYRO_SYNC2] || aux[GYRO_SYNC3])
+		if( aux[GYRO_SYNC2] )
 			i2c_dma_phase = 2;
 
 	} else {	
-			i2c_rx_buffer_sync[0] = i2c_rx_buffer_dma1[ 8];
-			i2c_rx_buffer_sync[1] = i2c_rx_buffer_dma1[ 9];
-			i2c_rx_buffer_sync[2] = i2c_rx_buffer_dma1[10];
-			i2c_rx_buffer_sync[3] = i2c_rx_buffer_dma1[11];
-			i2c_rx_buffer_sync[4] = i2c_rx_buffer_dma1[12];
-			i2c_rx_buffer_sync[5] = i2c_rx_buffer_dma1[13];			
+		i2c_rx_buffer_sync[0] = i2c_rx_buffer_dma1[ 8];
+		i2c_rx_buffer_sync[1] = i2c_rx_buffer_dma1[ 9];
+		i2c_rx_buffer_sync[2] = i2c_rx_buffer_dma1[10];
+		i2c_rx_buffer_sync[3] = i2c_rx_buffer_dma1[11];
+		i2c_rx_buffer_sync[4] = i2c_rx_buffer_dma1[12];
+		i2c_rx_buffer_sync[5] = i2c_rx_buffer_dma1[13];	
 		
-			for( int i=0;i<14;i++ ) 
-				i2c_rx_buffer_dma2[i] = i2c_rx_buffer_dma1[i];
+		for( int i=0;i<14;i++ ) 
+			i2c_rx_buffer_dma2[i] = i2c_rx_buffer_dma1[i];
 		
-			i2c_dma_phase = i2c_dma_count;
+		i2c_dma_phase = i2c_dma_count;
 	}
 
 	if( i2c_dma_count < 2 && aux[GYRO_SYNC1] ) {
@@ -303,11 +283,11 @@ void DMA1_Channel2_3_IRQHandler(void)
 	
 		DMA_Cmd( DMA1_Channel3, ENABLE );
 		I2C_DMACmd( I2C1, I2C_DMAReq_Rx, ENABLE );		
+		
 	} else {
 		
-		if(				aux[GYRO_SYNC1] ) gyro_sync1();
-		else if(	aux[GYRO_SYNC2] ) gyro_sync2();
-		else												gyro_sync3();
+		if( aux[GYRO_SYNC1] ) gyro_sync1();
+		else 									gyro_sync2();
 
 		i2c_dma_count = 0;		
 		i2c_dma_phase = 2;
@@ -323,20 +303,12 @@ void TIM17_IRQHandler(void)
 	
 	// trigger I2C DMA
 	DMA_ClearFlag( DMA1_FLAG_GL3 );
+	DMA1_Channel3->CNDTR = 14;
 	
-	if( !aux[LEVELMODE] && (aux[GYRO_SYNC3] && !onground)  ) {
-		DMA1_Channel3->CMAR = (uint32_t)(i2c_rx_buffer_dma1+8);
-		DMA1_Channel3->CNDTR = 6;
-		hw_i2c_sendheader( 67 , 1 );
-		//send restart + readaddress
-		I2C_TransferHandling(I2C1, (0x68)<<1 ,  6, I2C_AutoEnd_Mode, I2C_Generate_Start_Read);
-	} else {
-		DMA1_Channel3->CMAR = (uint32_t)i2c_rx_buffer_dma1;
-		DMA1_Channel3->CNDTR = 14;
-		hw_i2c_sendheader( 59 , 1 );
-		//send restart + readaddress
-		I2C_TransferHandling(I2C1, (0x68)<<1 , 14, I2C_AutoEnd_Mode, I2C_Generate_Start_Read);	
-	}		
+	hw_i2c_sendheader( 59 , 1 );
+	//send restart + readaddress
+	I2C_TransferHandling(I2C1, (0x68)<<1 , 14, I2C_AutoEnd_Mode, I2C_Generate_Start_Read);
+	
 	DMA_Cmd( DMA1_Channel3, ENABLE );
   I2C_DMACmd( I2C1, I2C_DMAReq_Rx, ENABLE );
 }
@@ -821,4 +793,10 @@ void acc_cal(void)
 	  }
 #endif
 }
+
+
+
+
+
+
 

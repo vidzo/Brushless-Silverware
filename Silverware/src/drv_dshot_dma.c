@@ -102,8 +102,6 @@
 	#define DSHOT_DMA_PHASE	1												// motor pins all at portA
 #endif
 
-#define DMA_WAIT_TIME		LOOPTIME
-
 extern int failsafe;
 extern int onground;
 
@@ -216,7 +214,7 @@ void pwm_init()
 	DMA_InitStructure.DMA_BufferSize = 						16;
 	DMA_InitStructure.DMA_PeripheralInc = 				DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = 						DMA_MemoryInc_Disable;
-	DMA_InitStructure.DMA_PeripheralDataSize = 		DMA_PeripheralDataSize_Word;
+	DMA_InitStructure.DMA_PeripheralDataSize = 		DMA_PeripheralDataSize_HalfWord;
 	DMA_InitStructure.DMA_MemoryDataSize = 				DMA_MemoryDataSize_HalfWord;
 	DMA_InitStructure.DMA_Mode = 									DMA_Mode_Normal;
 	DMA_InitStructure.DMA_Priority = 							DMA_Priority_High;
@@ -231,7 +229,7 @@ void pwm_init()
 	DMA_InitStructure.DMA_BufferSize = 						16;
 	DMA_InitStructure.DMA_PeripheralInc = 				DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = 						DMA_MemoryInc_Enable;
-	DMA_InitStructure.DMA_PeripheralDataSize = 		DMA_PeripheralDataSize_Word;
+	DMA_InitStructure.DMA_PeripheralDataSize = 		DMA_PeripheralDataSize_HalfWord;
 	DMA_InitStructure.DMA_MemoryDataSize = 				DMA_MemoryDataSize_HalfWord;
 	DMA_InitStructure.DMA_Mode = 									DMA_Mode_Normal;
 	DMA_InitStructure.DMA_Priority = 							DMA_Priority_High;
@@ -246,7 +244,7 @@ void pwm_init()
 	DMA_InitStructure.DMA_BufferSize = 						16;
 	DMA_InitStructure.DMA_PeripheralInc = 				DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = 						DMA_MemoryInc_Disable;
-	DMA_InitStructure.DMA_PeripheralDataSize = 		DMA_PeripheralDataSize_Word;
+	DMA_InitStructure.DMA_PeripheralDataSize = 		DMA_PeripheralDataSize_HalfWord;
 	DMA_InitStructure.DMA_MemoryDataSize = 				DMA_MemoryDataSize_HalfWord;
 	DMA_InitStructure.DMA_Mode = 									DMA_Mode_Normal;
 	DMA_InitStructure.DMA_Priority = 							DMA_Priority_High;
@@ -345,17 +343,17 @@ void make_packet( uint8_t number, uint16_t value, bool telemetry )
 void dshot_dma_start()
 {
 	uint32_t	time=gettime();
-	while( dshot_dma_phase != 0 && (gettime()-time) < DMA_WAIT_TIME ) { } // wait maximum a LOOPTIME for dshot dma to complete
-	if( dshot_dma_phase != 0 ) return;																		// skip this dshot command
+	while( dshot_dma_phase != 0 && (gettime()-time) < LOOPTIME ) { } 	// wait maximum a LOOPTIME for dshot dma to complete
+	if( dshot_dma_phase != 0 ) return;																// skip this dshot command
 	
 #if	defined(RGB_LED_DMA) && (RGB_LED_NUMBER>0)
 	/// terminate current RGB transfer
 	extern int	rgb_dma_phase;
 	
 	time=gettime();
-	while( rgb_dma_phase ==1 && (gettime()-time) < DMA_WAIT_TIME ) { } 	// wait maximum a LOOPTIME for RGB dma to complete
+	while( rgb_dma_phase ==1 && (gettime()-time) < LOOPTIME ) { } 		// wait maximum a LOOPTIME for RGB dma to complete
 	
-	if( rgb_dma_phase ==1 ) {																						// terminate current RGB dma transfer, proceed dshot 
+	if( rgb_dma_phase ==1 ) {																					// terminate current RGB dma transfer, proceed dshot 
 		rgb_dma_phase =0;
 		DMA_Cmd(DMA1_Channel5, DISABLE);
 		DMA_Cmd(DMA1_Channel2, DISABLE);
@@ -397,6 +395,8 @@ void dshot_dma_start()
 	TIM1->ARR 	= DSHOT_BIT_TIME;
 	TIM1->CCR1 	= DSHOT_T0H_TIME;
 	TIM1->CCR4 	= DSHOT_T1H_TIME;
+	
+	DMA1_Channel2->CCR |= DMA_MemoryDataSize_HalfWord|DMA_PeripheralDataSize_HalfWord;	// switch from byte to halfword
 	
 	dshot_dma_portA();
 }
@@ -443,7 +443,7 @@ void pwm_set( uint8_t number, float pwm )
 			// 1s after failsafe we turn off the signal for safety
             // this means the escs won't rearm correctly after 2 secs of signal lost
             // usually the quad should be gone by then
-			if ( gettime() - pwm_failsafe_time > 1000000 ) {
+			if ( gettime() - pwm_failsafe_time > 4000000 ) {
 				value = 0;
 								/*
                 gpioreset( DSHOT_PORT_0, DSHOT_PIN_0 );
@@ -511,7 +511,7 @@ void motorbeep()
 }
 
 
-#if defined(USE_DSHOT_DMA_DRIVER) || ( defined(RGB_LED_DMA) && (RGB_LED_NUMBER>0) )
+#if defined(USE_DSHOT_DMA_DRIVER) 
 
 void DMA1_Channel4_5_IRQHandler(void)
 {	
@@ -523,7 +523,7 @@ void DMA1_Channel4_5_IRQHandler(void)
 	DMA_ClearITPendingBit(DMA1_IT_TC4);		
 	TIM_Cmd( TIM1, DISABLE );
 	
-#ifdef USE_DSHOT_DMA_DRIVER
+
 	switch( dshot_dma_phase ) {
 		case 2:
 			dshot_dma_phase =1;
@@ -545,7 +545,7 @@ void DMA1_Channel4_5_IRQHandler(void)
 			dshot_dma_phase =0;
 			break;		
 	}
-#endif
+
 	
 #if defined(RGB_LED_DMA) && (RGB_LED_NUMBER>0)	
 	extern int rgb_dma_phase;
