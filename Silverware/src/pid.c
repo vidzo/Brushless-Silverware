@@ -38,9 +38,13 @@ THE SOFTWARE.
 
 //**************************ADVANCED PID CONTROLLER*******************************
 
-//													 Roll  PITCH  YAW
-float stickAccelerator[3] = { 0.0 , 0.0 , 0.0};
-float stickTransition[3]  = { 0.0 , 0.0 , 0.0}; 
+//pid profile A											 Roll  PITCH  YAW
+float stickAcceleratorProfileA[3] = { 0.0 , 0.0 , 0.0};
+float stickTransitionProfileA[3]  = { 0.0 , 0.0 , 0.0}; 
+
+//pid profile B											 Roll  PITCH  YAW
+float stickAcceleratorProfileB[3] = { 1.0 , 1.0 , 1.0};
+float stickTransitionProfileB[3]  = { 1.0 , 1.0 , 1.0};  
 
 //*********************************************Setpoint Weight*******************************************
 // "setpoint weighting" 0.0 - 1.0 where 1.0 = normal pid
@@ -263,7 +267,20 @@ float pid(int x )
 				extern float rxcopy[4];		
         float dterm;		
 				float transitionSetpointWeight[3];
+				float stickAccelerator[3];
+ 			float stickTransition[3];
+			if (aux[PIDPROFILE]){
+				stickAccelerator[x] = stickAcceleratorProfileB[x];
+				stickTransition[x] = stickTransitionProfileB[x];
+			}else{
+				stickAccelerator[x] = stickAcceleratorProfileA[x];
+				stickTransition[x] = stickTransitionProfileA[x];
+			}				
+				if (stickAccelerator[x] < 1){
 				transitionSetpointWeight[x] = (fabs(rxcopy[x]) * stickTransition[x]) + (1- stickTransition[x]);
+			}else{
+				transitionSetpointWeight[x] = (fabs(rxcopy[x]) * (stickTransition[x] / stickAccelerator[x])) + (1- stickTransition[x]);	
+				}
         static float lastrate[3];
 				static float lastsetpoint[3];
         static float dlpf[3] = {0};
@@ -294,6 +311,15 @@ float pid(int x )
 				extern float rxcopy[4];		
         float dterm;		
 				float transitionSetpointWeight[3];
+				float stickAccelerator[3];
+				float stickTransition[3];
+			if (aux[PIDPROFILE]){
+				stickAccelerator[x] = stickAcceleratorProfileB[x];
+				stickTransition[x] = stickTransitionProfileB[x];
+			}else{
+				stickAccelerator[x] = stickAcceleratorProfileA[x];
+				stickTransition[x] = stickTransitionProfileA[x];
+			}
 				if (stickAccelerator[x] < 1){
 				transitionSetpointWeight[x] = (fabs(rxcopy[x]) * stickTransition[x]) + (1- stickTransition[x]);
 				}else{
