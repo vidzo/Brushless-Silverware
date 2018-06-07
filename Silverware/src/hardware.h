@@ -48,6 +48,10 @@
 
 // ------------- Select this for faster gyro read. Must use HARDWARE_I2C
 //#define SIXAXIS_READ_DMA
+// ------------- Sixaxis DMA BETA. Define channels to compare the sync
+#define GYRO_SYNC1 CHAN_OFF
+#define GYRO_SYNC2 CHAN_OFF
+#define GYRO_SYNC3 CHAN_OFF // works only when LEVELMODE off and not onground
 
 // ------------- Automatic voltage telemetry correction/calibration factor - change the values below if voltage telemetry 
 // ************* is inaccurate

@@ -262,7 +262,7 @@ void DMA1_Channel2_3_IRQHandler(void)
 
 	// if onground, gyro is steady and often the same, sync will fail and the time will be limited at boundary
 	// if GYRO_SYNC off, TIM17 + read 14bytes one time in a loop	
-	if( !aux[GYRO_SYNC1] && !aux[GYRO_SYNC2] && (aux[LEVELMODE] || aux[RACEMODE] || aux[HRORIZON] || !aux[GYRO_SYNC3] || onground) ) {			
+	if( !aux[GYRO_SYNC1] && !aux[GYRO_SYNC2] && (aux[LEVELMODE] || aux[RACEMODE] || aux[HORIZON] || !aux[GYRO_SYNC3] || onground) ) {			
 		for( int i=0;i<14;i++ ) 
 			i2c_rx_buffer_dma2[i] = i2c_rx_buffer_dma1[i];
 		
@@ -324,7 +324,7 @@ void TIM17_IRQHandler(void)
 	// trigger I2C DMA
 	DMA_ClearFlag( DMA1_FLAG_GL3 );
 	
-	if( !aux[LEVELMODE] || !aux[RACEMODE] || !aux[HRORIZON] && (aux[GYRO_SYNC3] && !onground)  ) {
+	if( !aux[LEVELMODE] || !aux[RACEMODE] || !aux[HORIZON] && (aux[GYRO_SYNC3] && !onground)  ) {
 		DMA1_Channel3->CMAR = (uint32_t)(i2c_rx_buffer_dma1+8);
 		DMA1_Channel3->CNDTR = 6;
 		hw_i2c_sendheader( 67 , 1 );

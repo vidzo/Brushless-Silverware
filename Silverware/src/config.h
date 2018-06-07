@@ -269,11 +269,6 @@
 //#define MOTORS_TO_THROTTLE
 //#define MOTORS_TO_THROTTLE_MODE CHAN_8
 
-// ------------- SIXAXIS DMA BETA
-#define GYRO_SYNC1 CHAN_OFF
-#define GYRO_SYNC2 CHAN_OFF
-#define GYRO_SYNC3 CHAN_OFF // works only when LEVELMODE off and not onground
-
 // ------------- Accelerometer telemetry which displays max G. 
 // ************* Units are G * 10 e.g readout of 60 is 6 G *above gravity* Gravity not included. 
 // ************* The value is in the rx reception field, only even numbers displayed. Value is held for 6 seconds
