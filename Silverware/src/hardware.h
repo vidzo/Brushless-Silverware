@@ -18,21 +18,21 @@
 //**********************************************************************************************************************
 //*******************************************ESC DRIVER SETTINGS********************************************************
 
-// esc driver = servo type signal for brushless esc
-// dshot driver = esc signal from gate of FET only
+// ------------- ESC driver = servo type signal for brushless esc
+// ************* Dshot driver = esc signal from gate of FET only
 //#define USE_ESC_DRIVER
 #define USE_DSHOT_DRIVER_BETA
 //#define USE_DSHOT_DMA_DRIVER
 
-// FC must have MOSFETS and motor pulldown resistors removed. 
-// Use in conjunction with either USE_ESC_DRIVER or USE_DSHOT_DRIVER_BETA  
+// ------------- FC must have MOSFETS and motor pulldown resistors removed. 
+// ************* Use in conjunction with either USE_ESC_DRIVER or USE_DSHOT_DRIVER_BETA  
 // MAY NOT WORK WITH ALL ESCS
 //#define USE_SERIAL_4WAY_BLHELI_INTERFACE
 
 //**********************************************************************************************************************
 //*******************************************MOTOR PINS SELECTION*******************************************************
 
-// Assingment of pin to motor to processor pin
+// ------------- Assingment of pin to motor to processor pin
 // back-left motor ( motor 0 )
 #define MOTOR0_PIN_PB1
 // front-left motor ( motor 1 )
@@ -46,46 +46,46 @@
 //**********************************************************************************************************************
 //*****************************************HARDWARE SETTINGS************************************************************
 
-// Select this for faster gyro read. Must use HARDWARE_I2C
+// ------------- Select this for faster gyro read. Must use HARDWARE_I2C
 //#define SIXAXIS_READ_DMA
 
-// *************automatic voltage telemetry correction/calibration factor - change the values below if voltage telemetry 
-// is inaccurate
+// ------------- Automatic voltage telemetry correction/calibration factor - change the values below if voltage telemetry 
+// ************* is inaccurate
 #define ACTUAL_BATTERY_VOLTAGE 4.20
 #define REPORTED_TELEMETRY_VOLTAGE 4.20
 
 
-// BUZZER pin settings - buzzer active "high"
-// SWDAT and SWCLK pins OK here
+// -------------BUZZER pin settings - buzzer active "high"
+// ************* SWDAT and SWCLK pins OK here
 // GPIO_Pin_13 // SWDAT - GPIO_Pin_14 // SWCLK 
 #define BUZZER_PIN       GPIO_Pin_x 
-// Buzzer radio channel selected in config.h
-// x (micro)seconds after loss of tx or low bat before buzzer starts
+// *************B uzzer radio channel selected in config.h
+// ************* x (micro)seconds after loss of tx or low bat before buzzer starts
 #define BUZZER_DELAY     30e6 
 
-// disable lvc functions
+// ------------- Disable lvc functions
 //#define DISABLE_LVC
 
-// gyro orientation if board is rotated in a non-default orientation
-// GYRO ORIENTATION CHOICES DISPLAYED IN MISCELLANEAOUS.C - place define below
+// ------------- Gyro orientation if board is rotated in a non-default orientation
+// ************* GYRO ORIENTATION CHOICES DISPLAYED IN MISCELLANEAOUS.C - place define below
 
-// disable the check for known gyro that causes the 4 times flash
+// ------------- Disable the check for known gyro that causes the 4 times flash
 //#define DISABLE_GYRO_CHECK
 
-// check for radio chip ( 3 times flash = not found)
+// ------------- Check for radio chip ( 3 times flash = not found)
 #define RADIO_CHECK
 
-// RGB led type ws2812 - ws2813
-// numbers over 8 could decrease performance
+// ------------- RGB led type ws2812 - ws2813
+// ************* numbers over 8 could decrease performance
 #define RGB_LED_NUMBER 0
 #define RGB_LED_DMA
 // pin / port for the RGB led ( programming port ok )
 #define RGB_PIN GPIO_Pin_11
 #define RGB_PORT GPIOA
 
-// pin for fpv switch ( turns off at failsafe )
-// GPIO_Pin_13 // SWDAT - GPIO_Pin_14 // SWCLK  
-// if programming pin, will not flash after bind
+// ------------- Pin for fpv switch ( turns off at failsafe )
+// ************* GPIO_Pin_13 // SWDAT - GPIO_Pin_14 // SWCLK  
+// ************* if programming pin, will not flash after bind
 #define FPV_PIN GPIO_Pin_13
 #define FPV_PORT GPIOA 
 
