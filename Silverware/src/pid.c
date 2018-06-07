@@ -321,7 +321,6 @@ float pid(int x )
 return pidoutput[x];		 		
 }
 
-//#define ANGLE_PID_ATTENUATION 0.70f
 // calculate change from ideal loop time
 // 0.0032f is there for legacy purposes, should be 0.001f = looptime
 // this is called in advance as an optimization because it has division
