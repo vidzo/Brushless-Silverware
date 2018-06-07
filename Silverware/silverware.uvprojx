@@ -458,6 +458,11 @@
               <FilePath>.\src\hardware.h</FilePath>
             </File>
             <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\pid.c</FilePath>
+            </File>
+            <File>
               <FileName>control.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\control.c</FilePath>
@@ -586,11 +591,6 @@
               <FileName>angle_pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\angle_pid.c</FilePath>
-            </File>
-            <File>
-              <FileName>pid.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\pid.c</FilePath>
             </File>
             <File>
               <FileName>defines.h</FileName>

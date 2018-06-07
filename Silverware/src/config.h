@@ -47,10 +47,6 @@
 #define RATES CHAN_ON
 #define LEDS_ON CHAN_ON
 
-// *************transmitter stick adjustable deadband for roll/pitch/yaw
-// *************.01f = 1% of stick range - comment out to disable
-//#define STICKS_DEADBAND .01f
-
 // *************EXPO from 0.00 to 1.00 , 0 = no exp
 // *************positive = less sensitive near center 
 #define ACRO_EXPO_ROLL 0.80
@@ -62,14 +58,14 @@
 #define ANGLE_EXPO_YAW 0.35
 
 //*************Idle up-Arm switch
-//************* idle up will behave like betaflight airmode, comment out to disable
+//************* idle up will behave like betaflight airmode, comment out to disable. 
+//************* Throttle must drop below this value if arming feature is enabled for arming to take place.  MIX_INCREASE_THROTTLE_3 
+//if enabled will also not activate on the ground untill this threshold is passed during takeoff for safety and better staging behavior.
 //#define ARMING CHAN_5
 //#define IDLE_UP CHAN_5
 //#define IDLE_THR 0.05f
-
-//Throttle must drop below this value if arming feature is enabled for arming to take place.  MIX_INCREASE_THROTTLE_3 if enabled
-//will also not activate on the ground untill this threshold is passed during takeoff for safety and better staging behavior.
 //#define THROTTLE_SAFETY .10f
+
 
 // *************automatically remove center bias in toy tx ( needs throttle off for 1 second )
 //#define STOCK_TX_AUTOCENTER
@@ -99,12 +95,13 @@
 // *************invert yaw pid for "PROPS OUT" configuration
 //#define INVERT_YAW_PID
 
-// *************Voltage compensation to increase handling at low battery
-#define PID_VOLTAGE_COMPENSATION
-#define LEVELMODE_PID_ATTENUATION 0.90f  //used to prevent oscillations in angle modes with pid_voltage_compensation enabled due to high pids
-
 // Removes roll and pitch bounce back after flips
 //#define TRANSIENT_WINDUP_PROTECTION
+
+// *************Voltage compensation to increase handling at low battery
+// ************ Levelmode_PID_attenuation isused to prevent oscillations in angle modes with pid_voltage_compensation enabled due to high pids
+//#define PID_VOLTAGE_COMPENSATION
+//#define LEVELMODE_PID_ATTENUATION 0.90f
 
 
 //**********************************************************************************************************************
@@ -112,11 +109,12 @@
 
 // *************Select the appropriate filtering set for your craft's gyro, D-term, and motor output or select CUSTOM_FILTERING to pick your own values.  
 // *************If your throttle does not want to drop crisply and quickly when you lower the throttle stick, then move to a stronger filter set
+// *************Filter strength selections outlined in miscellaneous.c file
 
 //#define WEAK_FILTERING
 //#define STRONG_FILTERING
-#define VERY_STRONG_FILTERING
-//#define CUSTOM_FILTERING
+//#define VERY_STRONG_FILTERING
+#define CUSTOM_FILTERING
 
 
 #ifdef CUSTOM_FILTERING
@@ -152,6 +150,7 @@
 //#define NORMAL_DTERM
 #define NEW_DTERM
 //#define MAX_FLAT_LPF_DIFF_DTERM
+
 #endif
 
 
@@ -253,6 +252,9 @@
 //#define INVERTED_ENABLE
 //#define FN_INVERTED CH_OFF //for brushless only
 
+// *************transmitter stick adjustable deadband for roll/pitch/yaw
+// *************.01f = 1% of stick range - comment out to disable
+//#define STICKS_DEADBAND .01f
 
 //**********************************************************************************************************************
 //****************************************************TESTING CONFIG****************************************************
