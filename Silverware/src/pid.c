@@ -36,6 +36,12 @@ THE SOFTWARE.
 //**************************************************PIDS*************************************************
 //*******************************************************************************************************
 
+//**************************ADVANCED PID CONTROLLER*******************************
+
+//													 Roll  PITCH  YAW
+float stickAccelerator[3] = { 0.0 , 0.0 , 0.0};
+float stickTransition[3]  = { 0.0 , 0.0 , 0.0}; 
+
 //*********************************************Setpoint Weight*******************************************
 // "setpoint weighting" 0.0 - 1.0 where 1.0 = normal pid
 #define ENABLE_SETPOINT_WEIGHTING
@@ -101,6 +107,7 @@ float v_compensation = 1.00;
 static float lasterror[PIDNUMBER];
 
 extern float error[PIDNUMBER];
+extern float setpoint[PIDNUMBER];
 extern float looptime;
 extern float gyro[3];
 extern int onground;
@@ -239,7 +246,7 @@ float pid(int x )
         #endif 
 
 
-        #ifdef DTERM_LPF_1ST_HZ
+        #if (defined DTERM_LPF_1ST_HZ && !defined ADVANCED_PID_CONTROLLER)
         float dterm;
         static float lastrate[3];
         static float dlpf[3] = {0};
@@ -251,8 +258,26 @@ float pid(int x )
 
         pidoutput[x] += dlpf[x];                   
         #endif
+				
+        #if (defined DTERM_LPF_1ST_HZ && defined ADVANCED_PID_CONTROLLER)
+				extern float rxcopy[4];		
+        float dterm;		
+				float transitionSetpointWeight[3];
+				transitionSetpointWeight[x] = (fabs(rxcopy[x]) * stickTransition[x]) + (1- stickTransition[x]);
+        static float lastrate[3];
+				static float lastsetpoint[3];
+        static float dlpf[3] = {0};
+        if ( pidkd[x] > 0){
+						dterm = ((setpoint[x] - lastsetpoint[x]) * pidkd[x] * stickAccelerator[x] * transitionSetpointWeight[x] * timefactor) - ((gyro[x] - lastrate[x]) * pidkd[x] * timefactor);
+						lastsetpoint[x] = setpoint [x];
+						lastrate[x] = gyro[x];	
+						lpf( &dlpf[x], dterm, FILTERCALC( 0.001 , 1.0f/DTERM_LPF_1ST_HZ ) );
+						pidoutput[x] += dlpf[x]; }                   
+        #endif	
+     
+
         
-        #ifdef DTERM_LPF_2ND_HZ
+        #if (defined DTERM_LPF_2ND_HZ && !defined ADVANCED_PID_CONTROLLER)
         float dterm;
         static float lastrate[3];			
         float lpf2( float in, int num);
@@ -264,6 +289,27 @@ float pid(int x )
             pidoutput[x] += dterm;
         }                       
         #endif
+				
+				#if (defined DTERM_LPF_2ND_HZ && defined ADVANCED_PID_CONTROLLER)
+				extern float rxcopy[4];		
+        float dterm;		
+				float transitionSetpointWeight[3];
+				if (stickAccelerator[x] < 1){
+				transitionSetpointWeight[x] = (fabs(rxcopy[x]) * stickTransition[x]) + (1- stickTransition[x]);
+				}else{
+				transitionSetpointWeight[x] = (fabs(rxcopy[x]) * (stickTransition[x] / stickAccelerator[x])) + (1- stickTransition[x]);	
+				}
+        static float lastrate[3];
+				static float lastsetpoint[3];
+        float lpf2( float in, int num);
+        if ( pidkd[x] > 0){
+						dterm = ((setpoint[x] - lastsetpoint[x]) * pidkd[x] * stickAccelerator[x] * transitionSetpointWeight[x] * timefactor) - ((gyro[x] - lastrate[x]) * pidkd[x] * timefactor);
+						lastsetpoint[x] = setpoint [x];
+						lastrate[x] = gyro[x];	
+            dterm = lpf2(  dterm, x );
+            pidoutput[x] += dterm;}
+				#endif
+	
     }
     
     limitf(  &pidoutput[x] , outlimit[x]);
