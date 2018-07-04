@@ -334,6 +334,8 @@ if ( frame_received )
 		    aux[CHAN_7] = (channels[6] > 993) ? 1 : 0;
 		    aux[CHAN_8] = (channels[7] > 993) ? 1 : 0;
 			aux[CHAN_9] = (channels[8] > 993) ? 1 : 0;
+			
+
         
         time_lastframe = gettime(); 
         if (sbus_stats) stat_frames_accepted++;       

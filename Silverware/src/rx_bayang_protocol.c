@@ -176,6 +176,10 @@ static char lasttrim[2];
 												
 					aux[CH_PIC] = (rxdata[2] & 0x20) ? 1 : 0;						
 #endif
+
+          aux[CH_TO] = (rxdata[3] & 0x20) ? 1 : 0;   // take off/landing flag
+
+          aux[CH_EMG] = (rxdata[3] & 0x04) ? 1 : 0;   // emg. stop flag
 							
 			    aux[CH_FLIP] = (rxdata[2] & 0x08) ? 1 : 0;
 
