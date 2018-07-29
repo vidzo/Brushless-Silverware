@@ -560,6 +560,11 @@ pidoutput[2] = -pidoutput[2];
        		mix[i] = motor_kalman(  mix[i] , i);  
        		#endif 
 			
+		#ifdef MOTOR_KAL_2ND
+      		float  motor_kalman_2nd( float in , int x) ;
+    mix[i] = motor_kalman_2nd(  mix[i] , i);  
+    #endif    
+			
 		#ifdef TORQUE_BOOST
        		float motord( float in , int x);           
 		mix[i] = motord(  mix[i] , i);
@@ -850,12 +855,20 @@ float motorfilter( float motorin ,int number)
     float x_est_last[4]={0};
     float P_last[4]={0}; 
     const float Q = 0.02;
+		
+		    #ifdef MOTOR_KAL_2ND
+    #undef MOTOR_KAL
+    const float R = Q/(float)MOTOR_KAL_2ND;
+    #endif
+    
 
    
     #ifdef MOTOR_KAL
     const float R = Q/(float)MOTOR_KAL;
-    #else
-    float R = 0.1;
+#endif
+    
+    #if ( !defined MOTOR_KAL_2ND  && ! defined MOTOR_KAL )
+    float R = 0.1; 
     #endif
 
 float  motor_kalman( float in , int x)   
@@ -869,7 +882,19 @@ float  motor_kalman( float in , int x)
 return x_est_last[x];
 }	
 	
-	
+float x_est_last2[4] ;
+ float  motor_kalman_2nd( float in , int x)   
+{  
+    
+    float P_temp = P_last[x] + Q; 
+    float K = P_temp/(P_temp + R);
+    float oneminusK = 1.0f - K;   
+     x_est_last[x] = oneminusK * x_est_last[x] + K * (in );  
+     float ans = x_est_last2[x] = oneminusK * x_est_last2[x] + K * (x_est_last[x]); 
+     P_last[x] = oneminusK * P_temp; 
+ return ans;
+}	
+
 float clip_feedforward[4];
 // clip feedforward adds the amount of thrust exceeding 1.0 ( max) 
 // to the next iteration(s) of the loop
