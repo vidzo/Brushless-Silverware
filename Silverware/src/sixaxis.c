@@ -692,6 +692,10 @@ else
 		}
 	}
 
+// receiver function
+void checkrx( void);
+checkrx();
+            
 		while ( (gettime() - time) < 1000 ) delay(10); 				
 		time = gettime();
 	}
