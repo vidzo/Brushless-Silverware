@@ -526,6 +526,11 @@
               <FilePath>.\src\rx_nrf24_bayang_telemetry.c</FilePath>
             </File>
             <File>
+              <FileName>rx_sumd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\rx_sumd.c</FilePath>
+            </File>
+            <File>
               <FileName>rx_cg023_protocol.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\rx_cg023_protocol.c</FilePath>

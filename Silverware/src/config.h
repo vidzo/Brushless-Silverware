@@ -7,11 +7,12 @@
 
 // ------------- Radio protocol selection
 // ************* Select only one
-#define RX_BAYANG_PROTOCOL_TELEMETRY
-//#define RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
+//#define RX_BAYANG_PROTOCOL_TELEMETRY
+#define RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
 //#define RX_BAYANG_BLE_APP
 //#define RX_SBUS
 //#define RX_NRF24_BAYANG_TELEMETRY
+//#define RX_SUMD
 
 // ------------- Rate in deg/sec
 #define MAX_RATE 720.0
