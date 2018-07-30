@@ -4,7 +4,7 @@
 #include "drv_spi.h"
 #include "binary.h"
 #include "config.h"
-
+ 
 #ifdef SOFTSPI_3WIRE
 
 GPIO_InitTypeDef mosi_init_struct;

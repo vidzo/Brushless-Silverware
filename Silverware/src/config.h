@@ -13,6 +13,8 @@
 //#define RX_SBUS
 //#define RX_NRF24_BAYANG_TELEMETRY
 //#define RX_SUMD
+//#define RX_DSMX_2048
+//#define RX_DSM2_1024
 
 // ------------- Rate in deg/sec
 #define MAX_RATE 720.0
@@ -289,6 +291,13 @@
 // ************* will disable throttle and will rapid blink the led when sticks are moved to 100% throws
 // ************* entering <LEFT-LEFT-DOWN> will return the quad to normal operation.
 //#define STICK_TRAVEL_CHECK
+
+//#define STICK_TRAVEL_CHECK
+//#define SWITCHABLE_FEATURE_1
+#ifdef SWITCHABLE_FEATURE_1
+//linked to gesture RRR & saved to flash with DDD
+//toggles state of variable int flash_feature_1
+#endif
 
 
 //#############################################################################################################################

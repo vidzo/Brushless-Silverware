@@ -105,7 +105,6 @@
 #define SOFTSPI_3WIRE 
 #endif
 
-
 #ifdef  BWHOOP
 #define LED_NUMBER 2
 #define LED1PIN GPIO_Pin_2
