@@ -53,10 +53,6 @@
 #define GYRO_SYNC2 CHAN_OFF
 #define GYRO_SYNC3 CHAN_ON // works only when LEVELMODE off and not onground
 
-// ------------- Select this for SPI gyro. Only available to use with M6881 gyro/H8 Mini Blue Board
-// ************* Buzzer GPIO may need to be reassigned to another pin
-//#define SPI_GYRO
-
 // ------------- Automatic voltage telemetry correction/calibration factor - change the values below if voltage telemetry 
 // ************* is inaccurate
 #define ACTUAL_BATTERY_VOLTAGE 4.20
@@ -103,6 +99,12 @@
 //***************************************************************************************************************************
 //***************************************************************************************************************************
 
+#ifdef DEDICATED_BOARD
+#define SOFTSPI_4WIRE 
+#else
+#define SOFTSPI_3WIRE 
+#endif
+
 #ifdef  BWHOOP
 #define LED_NUMBER 2
 #define LED1PIN GPIO_Pin_2
@@ -119,8 +121,6 @@
 #define SPI_SS_PIN GPIO_Pin_0
 #define SPI_SS_PORT GPIOF
 #define BUZZER_PIN_PORT  GPIOA
-#define SOFTSPI_3WIRE
-#define RADIO_XN297L
 #endif
 
 #ifdef E011
@@ -140,8 +140,6 @@
 #define SPI_SS_PIN GPIO_Pin_0
 #define SPI_SS_PORT GPIOA
 #define BUZZER_PIN_PORT  GPIOA
-#define SOFTSPI_3WIRE
-#define RADIO_XN297L
 #endif
 
 #ifdef H8MINI_BLUE_BOARD
@@ -151,31 +149,13 @@
 #define GYRO_ID_2 0x78 // common h8 gyro
 #define USE_HARDWARE_I2C
 #define SENSOR_ROTATE_180
-#define BUZZER_PIN_PORT  GPIOA
-
-#ifdef SPI_RADIO
-#define SERIAL_RX_PIN GPIO_Pin_14
-#define SERIAL_RX_PORT GPIOA
-#define SERIAL_RX_SOURCE GPIO_PinSource14
-#define SERIAL_RX_CHANNEL GPIO_AF_1
-#define SOFTSPI_NONE
-//dummy spi placeholders
-#define SPI_MOSI_PIN GPIO_Pin_x
-#define SPI_MOSI_PORT GPIOA
-#define SPI_CLK_PIN GPIO_Pin_y
-#define SPI_CLK_PORT GPIOA
-#define SPI_SS_PIN GPIO_Pin_z
-#define SPI_SS_PORT GPIOA
-#else
 #define SPI_MOSI_PIN GPIO_Pin_1
 #define SPI_MOSI_PORT GPIOA
 #define SPI_CLK_PIN GPIO_Pin_2
 #define SPI_CLK_PORT GPIOA
 #define SPI_SS_PIN GPIO_Pin_3
 #define SPI_SS_PORT GPIOA
-#define SOFTSPI_3WIRE
-#define RADIO_XN297L
-#endif
+#define BUZZER_PIN_PORT  GPIOA
 #endif
 
 #ifdef SILVERLIGHT
@@ -192,8 +172,6 @@
 #define SPI_SS_PIN GPIO_Pin_3
 #define SPI_SS_PORT GPIOA
 #define BUZZER_PIN_PORT  GPIOA
-#define SOFTSPI_3WIRE
-#define RADIO_XN297L
 #endif
 
 #ifdef DEDICATED_BOARD
@@ -213,8 +191,6 @@
 #define SPI_SS_PIN GPIO_Pin_3
 #define SPI_SS_PORT GPIOA
 #define BUZZER_PIN_PORT  GPIOF
-#define SOFTSPI_4WIRE
-#define RADIO_XN297L
 #endif
 
 
@@ -269,19 +245,3 @@
 // Change this factor to get a correct battery voltage. 
 // Information on how to increase accuracy can be found in miscellaneous.c file
 #define ADC_SCALEFACTOR 0.001364
-
-#ifdef SPI_GYRO
-#ifdef E011
-#warning "SPI GYRO ONLY AVAILABLE WITH H8 MINI BLUE BOARD"
-#endif
-#ifdef BWHOOP
-#warning "SPI GYRO ONLY AVAILABLE WITH H8 MINI BLUE BOARD"
-#endif
-#ifdef SILVERLIGHT
-#warning "SPI GYRO ONLY AVAILABLE WITH H8 MINI BLUE BOARD"
-#endif
-#ifdef DEDICATED_BOARD
-#warning "SPI GYRO ONLY AVAILABLE WITH H8 MINI BLUE BOARD"
-#endif
-#endif
-
