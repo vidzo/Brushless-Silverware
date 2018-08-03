@@ -492,8 +492,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\rx_sumd.c</PathWithFileName>
-      <FilenameWithoutPath>rx_sumd.c</FilenameWithoutPath>
+      <PathWithFileName>.\src\rx_cg023_protocol.c</PathWithFileName>
+      <FilenameWithoutPath>rx_cg023_protocol.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -504,8 +504,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\src\rx_cg023_protocol.c</PathWithFileName>
-      <FilenameWithoutPath>rx_cg023_protocol.c</FilenameWithoutPath>
+      <PathWithFileName>.\src\rx_h7_protocol.c</PathWithFileName>
+      <FilenameWithoutPath>rx_h7_protocol.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -516,8 +516,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\src\rx_h7_protocol.c</PathWithFileName>
-      <FilenameWithoutPath>rx_h7_protocol.c</FilenameWithoutPath>
+      <PathWithFileName>.\src\rx_sumd.c</PathWithFileName>
+      <FilenameWithoutPath>rx_sumd.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
