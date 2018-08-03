@@ -1,6 +1,7 @@
 
 #include "binary.h"
 #include "drv_spi.h"
+#include "config.h"
 
 #include "project.h"
 #include "xn297.h"
