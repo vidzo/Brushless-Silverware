@@ -107,8 +107,21 @@ extern int rx_bind_enable;
     else
     {
       // this will leave 255's so it will be picked up as disabled  
+	
     }
 #endif    
+
+#ifdef SWITCHABLE_FEATURE_1
+extern int flash_feature_1;
+ //save filter cut info
+ if (flash_feature_1)
+{
+	fmc_write_float (53,1);	
+}else{
+	fmc_write_float (53,0);	
+}
+ #endif
+
 
     writeword(255, FMC_HEADER);
     
@@ -197,6 +210,10 @@ extern int rx_bind_enable;
     }
 #endif
     
+		#ifdef SWITCHABLE_FEATURE_1
+ extern int flash_feature_1;
+ flash_feature_1 = fmc_read_float(53);
+ #endif
 
 	
     }

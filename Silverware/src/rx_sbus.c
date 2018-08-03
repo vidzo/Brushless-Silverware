@@ -27,14 +27,15 @@ extern char lastaux[AUXNUMBER];
 extern char auxchange[AUXNUMBER];
 int failsafe = 0;
 int rxmode = 0;
+int rx_ready = 0;
 
 
 // internal sbus variables
-#define RX_BUFF_SIZE 64
-uint8_t rx_buffer[RX_BUFF_SIZE];
+#define RX_BUFF_SIZE 64							//SPEK_FRAME_SIZE 16  
+uint8_t rx_buffer[RX_BUFF_SIZE];    //spekFrame[SPEK_FRAME_SIZE]
 uint8_t rx_start = 0;
 uint8_t rx_end = 0;
-uint16_t rx_time[RX_BUFF_SIZE];
+uint16_t rx_time[RX_BUFF_SIZE];			//????
 
 int framestarted = -1;
 uint8_t framestart = 0;
@@ -47,6 +48,7 @@ int last_byte = 0;
 unsigned long time_lastframe;
 int frame_received = 0;
 int rx_state = 0;
+int bind_safety = 0;
 uint8_t data[25];
 int channels[9];
 
@@ -82,8 +84,8 @@ void USART1_IRQHandler(void)
         elapsedticks = lastticks + ( maxticks - ticks);	
         }
 
-    if ( elapsedticks < 65536 ) rx_time[rx_end] = elapsedticks; 
-    else rx_time[rx_end] = 65535;
+    if ( elapsedticks < 65536 ) rx_time[rx_end] = elapsedticks; //
+    else rx_time[rx_end] = 65535;  //ffff
 
     lastticks = ticks;
        
@@ -239,7 +241,7 @@ else if ( framestarted == 1)
   
     rx_start = rx_end;
     framestarted = 0;
-    
+    bind_safety++;   
     } // end frame complete  
     
 }// end frame pending
@@ -339,7 +341,10 @@ if ( frame_received )
 
         
         time_lastframe = gettime(); 
-        if (sbus_stats) stat_frames_accepted++;       
+        if (sbus_stats) stat_frames_accepted++;
+				if (bind_safety > 9){								//requires 10 good frames to come in before rx_ready safety can be toggled to 1
+				rx_ready = 1;											// because aux channels initialize low and clear the binding while armed flag before aux updates high
+				bind_safety = 10;}	
     }
  
 

@@ -177,7 +177,8 @@ char rfchannel[4];
 int rxaddress[5];
 int rxmode = 0;
 int rf_chan = 0;
-int rx_state = 0;
+int rx_ready = 0;
+int bind_safety = 0;
 
 unsigned int total_time_in_air = 0;
 unsigned int time_throttle_on = 0;
@@ -1174,7 +1175,10 @@ unsigned long temptime = gettime();
 			      }
 
 		    }		// end normal rx mode
-			rx_state = 1;
+				bind_safety++;
+				if (bind_safety > 9){								//requires 10 good frames to come in before rx_ready safety can be toggled to 1
+				rx_ready = 1;											// because aux channels initialize low and clear the binding while armed flag before aux updates high
+				bind_safety = 10;	}
 	  }			// end packet received
 
 	beacon_sequence();

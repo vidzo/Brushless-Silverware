@@ -18,6 +18,7 @@ extern char lastaux[AUXNUMBER];
 extern char auxchange[AUXNUMBER];
 int failsafe = 0;
 int rxmode = 0;
+int rx_ready = 0;
  // internal sumd variables
 #define RX_BUFF_SIZE 64
 uint8_t rx_buffer[RX_BUFF_SIZE];
@@ -31,6 +32,7 @@ unsigned long time_siglost;
  unsigned long time_lastframe;
 int frame_received = 0;
 int rx_state = 0;
+int bind_safety = 0;
 uint8_t data[25];
 //int channels[9];
  int failsafe_sumd_failsafe = 0;
@@ -237,7 +239,7 @@ else if ( framestarted == 1)
  end:  
     rx_start = rx_end;
     framestarted = 0;
-    
+  bind_safety++;   
     } // end frame complete  
     
 }// end frame pending
@@ -350,7 +352,10 @@ if ( bypass_safety)
 		aux[CH_RTH] = (channels[7] > 0) ? 1 : 0;
         
         time_lastframe = gettime(); 
-        if (sumd_stats) stat_frames_accepted++;       
+        if (sumd_stats) stat_frames_accepted++;   
+				if (bind_safety > 9){								//requires 10 good frames to come in before rx_ready safety can be toggled to 1
+				rx_ready = 1;											// because aux channels initialize low and clear the binding while armed flag before aux updates high
+				bind_safety = 10;}				
     }
  
  // stats

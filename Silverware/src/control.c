@@ -47,7 +47,7 @@ extern int in_air;
 extern int arming_release;
 extern int binding_while_armed;
 extern int rx_ready;
-extern int rx_state;
+
 
 extern float rx[];
 extern float gyro[3];
@@ -326,7 +326,7 @@ if (aux[LEVELMODE]&&!acro_override){
 #else																												  											// CONDITION: arming feature is enabled
 	if (!aux[ARMING]){																					 										  // 						CONDITION: switch is DISARMED
 		armed_state = 0;																															  // 												disarm the quad by setting armed state variable to zero
-		if ((rx_ready == 1) && (rx_state ==1))	binding_while_armed = 0;																		//                        rx is bound and has been disarmed so clear binding while armed flag
+		if (rx_ready ==1)	binding_while_armed = 0;																		//                        rx is bound and has been disarmed so clear binding while armed flag
 	}else{ 																				   						  										// 						CONDITION: switch is ARMED
 		if (((rx[3] > THROTTLE_SAFETY) && (arming_release == 0)) || (binding_while_armed == 1)){ 		//				   CONDITION: (throttle is above safety limit and ARMING RELEASE FLAG IS NOT CLEARED) OR (bind just took place with transmitter armed)		
 			armed_state = 0;
@@ -427,7 +427,7 @@ if (aux[CH_AUX1]){
 					}
 			}
 		#endif				
-		
+		throttle = 0;										//zero out throttle so it does not come back on as idle up value if enabled			
 		onground = 1;
 		thrsum = 0;
 		

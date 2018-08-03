@@ -121,7 +121,9 @@ int in_air;
 int armed_state;
 int arming_release;
 int binding_while_armed = 1;
-int rx_ready = 0;
+
+//Experimental Flash Memory Feature
+int flash_feature_1 = 0;
 
 // for led flash on gestures
 int ledcommand = 0;
@@ -152,6 +154,11 @@ clk_init();
 	spi_init();
 	
   time_init();
+	
+		#if defined(RX_DSMX_2048) || defined(RX_DSM2_1024)    
+  rx_spektrum_bind();    
+  #endif
+	
 
 	delay(100000);
 		
@@ -424,7 +431,7 @@ if ( LED_NUMBER > 0)
                     ledflash ( 500000, 15);			
                 }
             else 
-            {   rx_ready = 1;
+            {   
                 int leds_on = aux[LEDS_ON];
                 if (ledcommand)
                 {

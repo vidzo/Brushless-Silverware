@@ -7,6 +7,7 @@
 
 // ------------- Radio protocol selection
 // ************* Select only one
+// ************* Define SPI_RX in hardware.c if using RX_DSM_2048/1048. RX_SBUS is optional
 //#define RX_BAYANG_PROTOCOL_TELEMETRY
 #define RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
 //#define RX_BAYANG_BLE_APP

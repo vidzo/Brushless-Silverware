@@ -62,6 +62,16 @@ void gestures( void)
                  ledblink = 2 - rx_bind_enable;
                  pid_gestures_used = 1;  
                  #endif
+								              }    
+			
+            if (command == GESTURE_RRR)
+              {								
+								 #ifdef SWITCHABLE_FEATURE_1
+                 extern int flash_feature_1;
+                 flash_feature_1=!flash_feature_1;
+                 ledblink = 2 - flash_feature_1;
+                 pid_gestures_used = 1;								 
+								 #endif
               }
               
             if (command == GESTURE_RRD)

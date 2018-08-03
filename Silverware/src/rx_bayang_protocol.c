@@ -40,7 +40,8 @@ THE SOFTWARE.
 #ifdef RX_BAYANG_PROTOCOL
 
 
-int rx_state = 1;
+  int rx_ready = 0;
+	int bind_safety = 0;
 extern float rx[4];
 extern char aux[AUXNUMBER];
 extern char lastaux[AUXNUMBER];
@@ -349,7 +350,10 @@ unsigned long temptime = gettime();
 				      failcount++;
 #endif
 			      }
-					rx_state = 1;
+				bind_safety++;
+				if (bind_safety > 9){								//requires 10 good frames to come in before rx_ready safety can be toggled to 1
+				rx_ready = 1;											// because aux channels initialize low and clear the binding while armed flag before aux updates high
+				bind_safety = 10;	}
 		    }		// end normal rx mode
 
 	  }			// end packet received
