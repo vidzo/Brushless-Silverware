@@ -90,7 +90,7 @@ void flash_save( void) {
 	}
 // ------- END OF DUAL PIDS CODE ------------
    
-#ifdef RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
+#if (defined RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND || defined RX_NRF24_BAYANG_TELEMETRY )
 // autobind info     
 extern char rfchannel[4];
 extern char rxaddress[5];
@@ -170,7 +170,7 @@ void flash_load( void) {
      }    */
 // ------- END OF DUAL PIDS CODE -------    
 		 
- #ifdef RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND  
+#if (defined RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND || defined RX_NRF24_BAYANG_TELEMETRY ) 
 extern char rfchannel[4];
 extern char rxaddress[5];
 extern int telemetry_enabled;
