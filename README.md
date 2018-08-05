@@ -3,7 +3,7 @@
 ## Yets' Brushless Bwhoop B03 Silverware modified to work on BWHOOP, E011, H8mini_blue_board, Sliverlight and Dedicated brushless board. 
 Based on the work of Silverxxx and NotFastEnuf.
 
-Last major update 24.4.18
+### Last major update 05.8.18
 
 ### New layout for config.h that includes PID tuning. *Setpoint weight is still in pid.c file.
 
