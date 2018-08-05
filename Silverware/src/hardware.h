@@ -55,7 +55,7 @@
 
 // ------------- Select this for SPI radio.
 // ************* Buzzer GPIO may need to be reassigned to another pin
-#define SPI_RX
+//#define SPI_RX
 
 // ------------- Automatic voltage telemetry correction/calibration factor - change the values below if voltage telemetry 
 // ************* is inaccurate
@@ -318,7 +318,7 @@
 #define GYRO_ID_3 0x7D
 #define GYRO_ID_4 0x72
 //#define RADIO_XN297
-#define RADIO_XN297L
+//#define RADIO_XN297L
 
 #ifdef USE_DSHOT_DMA_DRIVER
 #define USE_HARDWARE_I2C 
