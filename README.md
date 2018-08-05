@@ -37,6 +37,15 @@ http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=brushless_setup and http://
 		 
 ## Current Experimental Features
 
+### Added 05.08.18 (and over he last two months)
+ - Autobind for NRF24 Dedicated board
+ - DSM protocols
+ - SUMD protocol
+ - SPI radio capabilities
+ - NFE Filter sets
+ - Advanced PID controller from NFE's fork
+ - Accelerometer Telemetry for Deviation 
+
 ### Added 25.4.18
  - Added JazzMac's experimental DShot DMA driver *EXPERIMENTAL*
  - Added throttle safety option (NFE)
