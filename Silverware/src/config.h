@@ -149,15 +149,15 @@
 // gyro filter 1 = 184hz delay 2.9mS
 // gyro filter 2 = 92hz delay 3.9mS
 // gyro filter 3 = 41hz delay 5.9mS (Default)
-#define GYRO_LOW_PASS_FILTER 3
+#define GYRO_LOW_PASS_FILTER 0
 
 // ------------- D term low pass filter type - set only one below and adjust frequency if adjustable filter is used
 // ************* 1st order adjustable, second order adjustable, or 3rd order fixed (non adjustable)
 //#define DTERM_LPF_1ST_HZ 100
-//#define DTERM_LPF_2ND_HZ 100
+#define DTERM_LPF_2ND_HZ 100
 //#define DTERM_LPF3_88
 //#define NORMAL_DTERM
-#define NEW_DTERM
+//#define NEW_DTERM
 //#define MAX_FLAT_LPF_DIFF_DTERM
 
 #endif
@@ -204,6 +204,9 @@
 //#define MIX_LOWER_THROTTLE_3
 //#define MIX_INCREASE_THROTTLE_3
 //#define MIX_THROTTLE_INCREASE_MAX 0.2f
+
+// ------------- Joelucid's scaling mixer throttle code
+//#define MIX_SCALING
 
 // ------------- Throttle angle compensation in level mode
 //#define AUTO_THROTTLE

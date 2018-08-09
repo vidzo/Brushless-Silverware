@@ -752,7 +752,37 @@ if ( overthrottle > 0.1f) ledcommand = 1;
 }	
 #endif
 
-            
+#ifdef MIX_SCALING
+         static int mixScaling;
+         if (onground) mixScaling = 0;
+         // only enable once really in the air
+         else if (throttle > 0.2f) mixScaling = 1;
+         if (mixScaling) {
+             float minMix = 1000.0f;
+             float maxMix = -1000.0f;
+             for (int i = 0; i<4; i++) {
+                 if (mix[i] < minMix) minMix = mix[i];
+                 if (mix[i] > maxMix) maxMix = mix[i];
+             }
+             float mixRange = maxMix - minMix;
+             float reduceAmount = 0.0f;
+             if (mixRange > 1.0f) {
+                 float scale = 1.0f / mixRange;
+                 for (int i = 0; i<4; i++)
+                     mix[i] *= scale;
+                 minMix *= scale;
+                 reduceAmount = minMix;
+             } else {
+                 if (maxMix > 1.0f)
+                     reduceAmount = maxMix - 1.0f;
+                 else if (minMix < 0.0f)
+                     reduceAmount = minMix;
+             }
+             if (reduceAmount != 0.0f)
+                 for (int i=0; i<4; i++)
+                     mix[i] -= reduceAmount;
+         }
+#endif            
             
             
 thrsum = 0;		
