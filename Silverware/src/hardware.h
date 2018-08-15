@@ -55,7 +55,7 @@
 
 // ------------- Select this for SPI radio.
 // ************* Buzzer GPIO may need to be reassigned to another pin
-//#define SPI_RX
+//#define EXTERNAL_RX
 
 // ------------- Automatic voltage telemetry correction/calibration factor - change the values below if voltage telemetry 
 // ************* is inaccurate
@@ -114,7 +114,7 @@
 #define SENSOR_ROTATE_90_CW
 #define BUZZER_PIN_PORT  GPIOA
 
-#ifdef SPI_RX
+#ifdef EXTERNAL_RX
 #define SERIAL_RX_SPEKBIND_PIN GPIO_Pin_3
 #define SERIAL_RX_PIN GPIO_Pin_14
 #define SERIAL_RX_PORT GPIOA
@@ -152,7 +152,7 @@
 #define USE_SOFTWARE_I2C
 #define BUZZER_PIN_PORT  GPIOA
 
-#ifdef SPI_RX
+#ifdef EXTERNAL_RX
 #define SERIAL_RX_SPEKBIND_PIN GPIO_Pin_3
 #define SERIAL_RX_PIN GPIO_Pin_14
 #define SERIAL_RX_PORT GPIOA
@@ -187,7 +187,7 @@
 #define SENSOR_ROTATE_180
 #define BUZZER_PIN_PORT  GPIOA
 
-#ifdef SPI_RX
+#ifdef EXTERNAL_RX
 #define SERIAL_RX_SPEKBIND_PIN GPIO_Pin_3
 #define SERIAL_RX_PIN GPIO_Pin_14
 #define SERIAL_RX_PORT GPIOA
@@ -222,7 +222,7 @@
 //#define SENSOR_ROTATE_180
 #define BUZZER_PIN_PORT  GPIOA
 
-#ifdef SPI_RX
+#ifdef EXTERNAL_RX
 #define SERIAL_RX_SPEKBIND_PIN GPIO_Pin_3
 #define SERIAL_RX_PIN GPIO_Pin_14
 #define SERIAL_RX_PORT GPIOA
@@ -258,7 +258,7 @@
 #define SENSOR_ROTATE_180
 #define BUZZER_PIN_PORT  GPIOF
 
-#ifdef SPI_RX
+#ifdef EXTERNAL_RX
 #define SERIAL_RX_SPEKBIND_PIN GPIO_Pin_3
 #define SERIAL_RX_PIN GPIO_Pin_14
 #define SERIAL_RX_PORT GPIOA

@@ -7,15 +7,14 @@
 
 // ------------- Radio protocol selection
 // ************* Select only one
-// ************* Define SPI_RX in hardware.c if using RX_DSM_2048/1048. RX_SBUS is optional
 //#define RX_BAYANG_PROTOCOL_TELEMETRY
 #define RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
 //#define RX_BAYANG_BLE_APP
-//#define RX_SBUS
 //#define RX_NRF24_BAYANG_TELEMETRY
-//#define RX_SUMD
-//#define RX_DSMX_2048
-//#define RX_DSM2_1024
+//#define RX_SBUS                              // Optional define EXTERNAL_RX in hardware.c
+//#define RX_SUMD                              // Define EXTERNAL_RX in hardware.c
+//#define RX_DSMX_2048                         // Define EXTERNAL_RX in hardware.c
+//#define RX_DSM2_1024                         // Define EXTERNAL_RX in hardware.c
 
 // ------------- Rate in deg/sec
 #define MAX_RATE 720.0
