@@ -1,5 +1,6 @@
 #include "config.h"
 #include "util.h"
+#include "defines.h"
 
 #include <math.h>
 #include <string.h>
