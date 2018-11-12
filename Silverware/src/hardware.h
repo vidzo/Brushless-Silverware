@@ -218,7 +218,7 @@
 #define LED1PIN GPIO_Pin_1
 #define LED1PORT GPIOF
 #define USE_HARDWARE_I2C
-#define GYRO_ID_2 0x78 // common h8 gyro
+#define GYRO_ID_2 0x98 // common h8 gyro
 //#define SENSOR_ROTATE_180
 #define BUZZER_PIN_PORT  GPIOA
 
