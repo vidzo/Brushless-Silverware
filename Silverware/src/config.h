@@ -103,7 +103,7 @@
 // ------------- Invert yaw pid for "PROPS OUT" configuration
 //#define INVERT_YAW_PID
 
-// ------------- Removes roll and pitch bounce back after flips
+// ------------- Removes roll and pitch bounce back after flips (Credit to Joe Lucid)
 //#define TRANSIENT_WINDUP_PROTECTION
 
 // ------------- Voltage compensation to increase handling at low battery
@@ -206,6 +206,10 @@
 
 // ------------- Joelucid's scaling mixer throttle code
 //#define MIX_SCALING
+
+// ------------- Markus Gritsch's Brushless motor curve. Creates a motor curve to compensate for the PID controller
+// and nonlinearity of motor thrust
+//#define THRUST_LINEARISATION
 
 // ------------- Throttle angle compensation in level mode
 //#define AUTO_THROTTLE
