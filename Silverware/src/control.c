@@ -145,11 +145,6 @@ float rate_multiplier = 1.0;
 		#endif
 	 }
 	
-#ifdef THRUST_LINEARISATION
-	 #define AA_motorCurve 0.5f // 0 .. linear, 1 .. quadratic
-	const float aa = AA_motorCurve;
-	rxcopy[3] = rxcopy[3] * ( rxcopy[3] * aa + 1 - aa ); // invert the motor curve correction applied further below
-#endif
 
 #ifndef DISABLE_FLIP_SEQUENCER	
   flip_sequencer();
@@ -375,6 +370,12 @@ if (aux[LEVELMODE]&&!acro_override){
 			}																																							//            						safety value to indicate craft has taken off for mix increase safety
 	}
 
+	#ifdef THRUST_LINEARISATION
+#define AA_motorCurve 0.5f // 0 .. linear, 1 .. quadratic
+	const float aa = AA_motorCurve;
+	throttle = throttle * ( throttle * aa + 1 - aa ); // invert the motor curve correction applied further below
+#endif
+	
 #ifdef STICK_TRAVEL_CHECK
 //Stick endpoints check tied to aux channel stick gesture
 if (aux[CH_AUX1]){
