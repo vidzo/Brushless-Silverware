@@ -367,6 +367,17 @@ void send_telemetry()
 
     int vbatt = vbattfilt * 100;
 // battery volt filtered    
+
+	//cpu load watch from JazzMac	
+#if defined(CPU_LOAD_WATCH)
+	if (aux[CPU_LOAD_WATCH])
+{
+}else{
+									extern float cpu_loading;	//add this line
+	                vbatt = cpu_loading * 100;	//add this line
+}
+#endif
+
     txdata[3] = (vbatt >> 8) & 0xff;
     txdata[4] = vbatt & 0xff;
 

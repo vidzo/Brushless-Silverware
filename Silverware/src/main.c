@@ -87,6 +87,7 @@ extern void flash_hard_coded_pid_identifier2(void); //dual PIDs code
 
 // looptime in seconds
 float looptime;
+float cpu_loading;
 // filtered battery in volts
 float vbattfilt = 0.0;
 float vbatt_comp = 4.2;
@@ -573,8 +574,12 @@ rgb_dma_start();
 // receiver function
 checkrx();
 
+#ifdef CPU_LOADING_WATCH
+cpu_loading = (gettime() - lastlooptime )*1e-3f ;
+#endif
 
 //while ( (gettime() - time) < LOOPTIME );	
+
 
 		
 	}// end loop

@@ -286,6 +286,14 @@
 // ************* Only works with bayang_protocol_telemetry, bayang_protocol_telemetry_autobind and nrf24_bayang_telemetry
 //#define ACC_TELEMETRY
 
+
+// ------------- Telemetry option to view CPU load 
+// ************* Allows the viewing of CPU load. Uses VBatt telemetry to display MCU loop time usage. 
+// ************* Try not to exceed 1.0v (1000 us/1 ms)
+// ************* Only works with bayang_protocol_telemetry, bayang_protocol_telemetry_autobind and nrf24_bayang_telemetry
+//#define CPU_LOADING_WATCH CHAN_OFF
+
+
 //**********************************************************************************************************************
 //********************************************************BETA TESTING**************************************************
 // *************This is a new section that will allow certain beta testing features to be tested, some activated by the stick gesture
