@@ -20,9 +20,11 @@
 
 // ------------- ESC driver = servo type signal for brushless esc
 // ************* Dshot driver = esc signal from gate of FET only
+#define USE_DSHOT_DMA_DRIVER
+//#define USE_DSHOT_DRIVER_BETA // Can not use Overclock option in config.h 
 //#define USE_ESC_DRIVER
-#define USE_DSHOT_DRIVER_BETA
-//#define USE_DSHOT_DMA_DRIVER
+
+
 
 // ------------- FC must have MOSFETS and motor pulldown resistors removed. 
 // ************* Use in conjunction with either USE_ESC_DRIVER or USE_DSHOT_DRIVER_BETA  

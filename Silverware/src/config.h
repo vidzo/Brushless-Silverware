@@ -291,7 +291,7 @@
 // ************* Allows the viewing of CPU load. Uses VBatt telemetry to display MCU loop time usage. 
 // ************* Try not to exceed 1.0v (1000 us/1 ms)
 // ************* Only works with bayang_protocol_telemetry, bayang_protocol_telemetry_autobind and nrf24_bayang_telemetry
-//#define CPU_LOADING_WATCH CHAN_OFF
+//#define CPU_LOAD_WATCH CHAN_OFF
 
 
 //**********************************************************************************************************************
@@ -352,7 +352,7 @@
 #define ENABLESTIX_TIMEOUT 1e6
 
 // ------------- Overclock to 64Mhz
-//#define ENABLE_OVERCLOCK
+#define ENABLE_OVERCLOCK
 
 #define PWMFREQ 32000
 #define MOTOR_CURVE_NONE

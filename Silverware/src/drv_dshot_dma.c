@@ -58,7 +58,7 @@
 
 // IDLE_OFFSET is added to the throttle. Adjust its value so that the motors
 // still spin at minimum throttle.
-#define IDLE_OFFSET 40
+#define IDLE_OFFSET 32
 
 // READ THIS:
 

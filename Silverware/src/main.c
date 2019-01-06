@@ -574,7 +574,7 @@ rgb_dma_start();
 // receiver function
 checkrx();
 
-#ifdef CPU_LOADING_WATCH
+#ifdef CPU_LOAD_WATCH
 cpu_loading = (gettime() - lastlooptime )*1e-3f ;
 #endif
 
