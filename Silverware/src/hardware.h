@@ -49,7 +49,7 @@
 //*****************************************HARDWARE SETTINGS************************************************************
 
 // ------------- Select this for faster gyro read. Must use HARDWARE_I2C
-//#define SIXAXIS_READ_DMA
+#define SIXAXIS_READ_DMA
 // ************* Sixaxis DMA BETA. Define channels to compare the sync
 #define GYRO_SYNC1 CHAN_OFF
 #define GYRO_SYNC2 CHAN_OFF
@@ -322,12 +322,6 @@
 //#define RADIO_XN297
 //#define RADIO_XN297L
 
-#ifdef USE_DSHOT_DMA_DRIVER
-#define USE_HARDWARE_I2C 
-#undef USE_SOFTWARE_I2C
-#endif
-
-// pwm pin initialization
 #ifdef SIXAXIS_READ_DMA
 #define USE_HARDWARE_I2C 
 #undef USE_SOFTWARE_I2C
