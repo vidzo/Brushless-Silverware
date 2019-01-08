@@ -352,7 +352,7 @@
 #define ENABLESTIX_TIMEOUT 1e6
 
 // ------------- Overclock to 64Mhz
-#define ENABLE_OVERCLOCK
+//#define ENABLE_OVERCLOCK
 
 #define PWMFREQ 32000
 #define MOTOR_CURVE_NONE

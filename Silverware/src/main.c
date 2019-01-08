@@ -578,7 +578,7 @@ checkrx();
 cpu_loading = (gettime() - lastlooptime )*1e-3f ;
 #endif
 
-//while ( (gettime() - time) < LOOPTIME );	
+while ( (gettime() - time) < LOOPTIME );	
 
 
 		
