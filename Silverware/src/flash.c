@@ -122,7 +122,16 @@ extern int flash_feature_1;
 }
  #endif
 
-
+#if defined(RX_DSMX_2048) || defined(RX_DSM2_1024)
+extern int rx_bind_enable;
+if ( rx_bind_enable ){
+		fmc_write_float (56,1);
+	}else{
+		fmc_write_float (56,0);	
+	}
+#endif
+		
+		
     writeword(255, FMC_HEADER);
     
 	fmc_lock();
@@ -215,7 +224,13 @@ extern int rx_bind_enable;
  flash_feature_1 = fmc_read_float(53);
  #endif
 
-	
+	#if defined(RX_DSMX_2048) || defined(RX_DSM2_1024)
+	extern int rx_bind_enable;
+	rx_bind_enable = fmc_read_float(56);
+#endif
+
+		
+		
     }
     else
     {

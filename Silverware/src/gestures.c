@@ -56,7 +56,7 @@ void gestures( void)
 		    }		
             if (command == GESTURE_UUU)
               {
-                 #if (defined RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND || defined RX_NRF24_BAYANG_TELEMETRY )      
+                 #if (defined RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND || defined RX_NRF24_BAYANG_TELEMETRY || RX_DSMX_2048 || defined RX_DSM2_1024 )      
                  extern int rx_bind_enable;
                  rx_bind_enable=!rx_bind_enable;
                  ledblink = 2 - rx_bind_enable;

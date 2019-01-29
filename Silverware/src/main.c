@@ -156,9 +156,9 @@ clk_init();
 	
   time_init();
 	
-		#if defined(RX_DSMX_2048) || defined(RX_DSM2_1024)    
-  rx_spektrum_bind();    
-  #endif
+#if defined(RX_DSMX_2048) || defined(RX_DSM2_1024)    
+		rx_spektrum_bind(); 
+#endif
 	
 
 	delay(100000);

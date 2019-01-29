@@ -551,14 +551,14 @@
               <FilePath>.\src\rx_sbus.c</FilePath>
             </File>
             <File>
-              <FileName>rx_dsm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\rx_dsm.c</FilePath>
-            </File>
-            <File>
               <FileName>led.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\led.c</FilePath>
+            </File>
+            <File>
+              <FileName>rx_dsm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\rx_dsm.c</FilePath>
             </File>
             <File>
               <FileName>rgb_led.c</FileName>
