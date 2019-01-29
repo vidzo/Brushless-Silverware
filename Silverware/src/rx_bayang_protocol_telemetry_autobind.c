@@ -32,6 +32,7 @@ THE SOFTWARE.
 #include "config.h"
 #include "defines.h"
 
+
 #include "rx_bayang.h"
 
 #include "util.h"

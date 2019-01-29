@@ -6,6 +6,7 @@
 #include "drv_time.h"
 #include "defines.h"
 #include "util.h"
+#include "drv_fmc.h"
  #if defined(RX_DSMX_2048) || defined(RX_DSM2_1024)
  #ifndef BUZZER_ENABLE 																									// use the convenience macros from buzzer.c for bind pulses
 #define PIN_OFF( port , pin ) GPIO_ResetBits( port , pin)
@@ -20,7 +21,9 @@ int failsafe = 0;
 int rxmode = 0;
 int rx_ready = 0;
 int bind_safety = 0;
+int rx_bind_enable = 0;
  // internal dsm variables
+ #define DSM_SCALE_PERCENT 100												//adjust this line to match the stick scaling % set in your transmitter
  #define SERIAL_BAUDRATE 115200
 #define SPEK_FRAME_SIZE 16   
 #define SPEKTRUM_NEEDED_FRAME_INTERVAL  5000
@@ -50,6 +53,10 @@ int rx_frame_pending;
 int rx_frame_pending_last;
 uint32_t flagged_time;
 static volatile uint8_t spekFrame[SPEK_FRAME_SIZE];
+
+float dsm2_scalefactor = (0.29354210f/DSM_SCALE_PERCENT);
+float dsmx_scalefactor = (0.14662756f/DSM_SCALE_PERCENT);
+
  // Receive ISR callback
 void USART1_IRQHandler(void)
 { 
@@ -140,26 +147,52 @@ void USART1_IRQHandler(void)
  // Send Spektrum bind pulses to a GPIO e.g. TX1
 void rx_spektrum_bind(void)
 {
+#ifdef SERIAL_RX_SPEKBIND_RX_PIN
+	rx_bind_enable = fmc_read_float(56);
+	if (rx_bind_enable == 0){
         GPIO_InitTypeDef    GPIO_InitStructure;
-        GPIO_InitStructure.GPIO_Pin = SERIAL_RX_SPEKBIND_PIN;
+        GPIO_InitStructure.GPIO_Pin = SERIAL_RX_SPEKBIND_RX_PIN;
         GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
         GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
         GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
         GPIO_Init(SERIAL_RX_PORT, &GPIO_InitStructure); 
         
         // RX line, set high
-        PIN_ON(SERIAL_RX_PORT, SERIAL_RX_SPEKBIND_PIN);
+        PIN_ON(SERIAL_RX_PORT, SERIAL_RX_SPEKBIND_RX_PIN);
         // Bind window is around 20-140ms after powerup
         delay(60000);
          for (uint8_t i = 0; i < BIND_PULSES; i++) { // 9 pulses for internal dsmx 11ms, 3 pulses for internal dsm2 22ms          
                 // RX line, drive low for 120us
-                PIN_OFF(SERIAL_RX_PORT, SERIAL_RX_SPEKBIND_PIN);
+                PIN_OFF(SERIAL_RX_PORT, SERIAL_RX_SPEKBIND_RX_PIN);
                 delay(120);
             
                 // RX line, drive high for 120us
-                PIN_ON(SERIAL_RX_PORT, SERIAL_RX_SPEKBIND_PIN);
+                PIN_ON(SERIAL_RX_PORT, SERIAL_RX_SPEKBIND_RX_PIN);
                 delay(120);
         }
+	}
+#endif
+        GPIO_InitTypeDef    GPIO_InitStructure;
+        GPIO_InitStructure.GPIO_Pin = SERIAL_RX_SPEKBIND_BINDTOOL_PIN;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+        GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+        GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+        GPIO_Init(SERIAL_RX_PORT, &GPIO_InitStructure); 
+
+        // RX line, set high
+        PIN_ON(SERIAL_RX_PORT, SERIAL_RX_SPEKBIND_BINDTOOL_PIN);
+        // Bind window is around 20-140ms after powerup
+        delay(60000);
+
+        for (uint8_t i = 0; i < BIND_PULSES; i++) { // 9 pulses for internal dsmx 11ms, 3 pulses for internal dsm2 22ms          
+                // RX line, drive low for 120us
+                PIN_OFF(SERIAL_RX_PORT, SERIAL_RX_SPEKBIND_BINDTOOL_PIN);
+                delay(120);
+
+                // RX line, drive high for 120us
+                PIN_ON(SERIAL_RX_PORT, SERIAL_RX_SPEKBIND_BINDTOOL_PIN);
+                delay(120);
+        }				
 }
  void rx_init(void)
 {
@@ -185,20 +218,22 @@ if (gettime() - flagged_time > FAILSAFETIME) framestarted = 0;            		//wa
 if ( framestarted == 1){
 				if ((bind_safety < 900) && (bind_safety > 0)) rxmode = RXMODE_BIND;																								// normal rx mode - removes waiting for bind led leaving failsafe flashes as data starts to come in
 		   
-      // AETR channel order
-	#ifdef RX_DSMX_2048
-        rx[0] = (channels[1]*0.000998005f)-1.02195767f;  
-        rx[1] = (channels[2]*0.000998005f)-1.02195767f; 
-        rx[2] = (channels[3]*0.000998005f)-1.02195767f;
-        rx[3] = (channels[0]*0.0004990025f)-0.0109780552f;
+      // TAER channel order
+	#ifdef RX_DSMX_2048																												
+	      rx[0] = (channels[1] - 1024.0f) * dsmx_scalefactor;
+        rx[1] = (channels[2] - 1024.0f) * dsmx_scalefactor;
+        rx[2] = (channels[3] - 1024.0f) * dsmx_scalefactor;
+        rx[3] =((channels[0] - 1024.0f) * dsmx_scalefactor * 0.5f) + 0.5f;
+
 				if ( rx[3] > 1 ) rx[3] = 1;	
 				if ( rx[3] < 0 ) rx[3] = 0;
 	#endif
  	#ifdef RX_DSM2_1024
-        rx[0] = (channels[1]*0.00199601f)-1.02195767f;  
-        rx[1] = (channels[2]*0.00199601f)-1.02195767f; 
-        rx[2] = (channels[3]*0.00199601f)-1.02195767f;
-        rx[3] = (channels[0]*0.000998005f)-0.0109780552f;
+        rx[0] = (channels[1] - 512.0f) * dsm2_scalefactor;
+        rx[1] = (channels[2] - 512.0f) * dsm2_scalefactor;
+        rx[2] = (channels[3] - 512.0f) * dsm2_scalefactor;	
+        rx[3] =((channels[0] - 512.0f) * dsm2_scalefactor * 0.5f) + 0.5f;
+
 				if ( rx[3] > 1 ) rx[3] = 1;	
 				if ( rx[3] < 0 ) rx[3] = 0;
 	#endif
@@ -245,17 +280,5 @@ if ( framestarted == 1){
 	}
 }	
 	#endif
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	

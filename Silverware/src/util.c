@@ -63,10 +63,6 @@ void lpf( float *out, float in , float coeff)
 	*out = ( *out )* coeff + in * ( 1-coeff); 
 }
 
-void lpfx( float *out, float in , float coeff , float coeff2)
-{
-	*out = ( *out )* coeff + in * coeff2; 
-}
 
 void limitf ( float *input , const float limit)
 {
