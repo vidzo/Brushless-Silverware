@@ -23,7 +23,7 @@ int rx_ready = 0;
 int bind_safety = 0;
 int rx_bind_enable = 0;
  // internal dsm variables
- #define DSM_SCALE_PERCENT 100												//adjust this line to match the stick scaling % set in your transmitter
+ #define DSM_SCALE_PERCENT 150												//adjust this line to match the stick scaling % set in your transmitter
  #define SERIAL_BAUDRATE 115200
 #define SPEK_FRAME_SIZE 16   
 #define SPEKTRUM_NEEDED_FRAME_INTERVAL  5000

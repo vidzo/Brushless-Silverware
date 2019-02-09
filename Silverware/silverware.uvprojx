@@ -541,6 +541,11 @@
               <FilePath>.\src\rx_sumd.c</FilePath>
             </File>
             <File>
+              <FileName>rx_crsf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\rx_crsf.c</FilePath>
+            </File>
+            <File>
               <FileName>rx_cx10blue_protocol.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\rx_cx10blue_protocol.c</FilePath>

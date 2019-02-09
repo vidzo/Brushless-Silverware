@@ -57,7 +57,7 @@
 #define GYRO_SYNC2 CHAN_OFF
 #define GYRO_SYNC3 CHAN_ON // works only when LEVELMODE off and not onground
 
-// ------------- Select this for SPI radio.
+// ------------- Select this for External SPI radio.
 // ************* Buzzer GPIO may need to be reassigned to another pin
 //#define EXTERNAL_RX
 
