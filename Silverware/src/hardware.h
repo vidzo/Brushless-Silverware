@@ -27,7 +27,9 @@
 
 
 // ------------- FC must have MOSFETS and motor pulldown resistors removed. 
-// ************* Use in conjunction with either USE_ESC_DRIVER or USE_DSHOT_DRIVER_BETA  
+// ************* Use in conjunction with either USE_ESC_DRIVER or USE_DSHOT_DRIVER_BETA 
+// ************* It is advised to disable #define SIXAXIS_READ_DMA while using passthrough. After ESC calibration
+// ************* undefine Blheli passthrough and define SIXAXIS_READ_DMA
 // MAY NOT WORK WITH ALL ESCS
 //#define USE_SERIAL_4WAY_BLHELI_INTERFACE
 
