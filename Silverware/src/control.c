@@ -835,7 +835,7 @@ thrsum = 0;
 		}
 		#endif
 		
-	#ifndef NOMOTORS
+	  #ifndef NOMOTORS
 		#ifndef MOTORS_TO_THROTTLE
 		//normal mode
 
