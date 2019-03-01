@@ -802,25 +802,6 @@ thrsum = 0;
 		for ( int i = 0 ; i <= 3 ; i++)
 		{			
 			
-	#ifdef THRUST_LINEARISATION
-						    // float test = motormap(mix[i]);
-
-				// Computationally quite expensive:
-				static float a, a_reci, b, b_sq;
-				if ( a != AA_motorCurve ) {
-					a = AA_motorCurve;
-					if ( a > 0.0f ) {
-						a_reci = 1 / a;
-						b = ( 1 - a ) / ( 2 * a );
-						b_sq = b * b;
-					}
-				}
-				float test = mix[i];
-				if ( test > 0.0f && a > 0.0f ) {
-					extern float Q_rsqrt( float number );
-					test = 1 / Q_rsqrt( mix[i] * a_reci + b_sq ) - b;
-				}
-#endif
 		           
 		#ifdef CLIP_FF
 		mix[i] = clip_ff(mix[i], i);
@@ -854,14 +835,32 @@ thrsum = 0;
 		}
 		#endif
 		
-			
-#if defined THRUST_LINEARISATION	
-		pwm_set( i, test );
-		#else	
-		#ifndef NOMOTORS
+	#ifndef NOMOTORS
 		#ifndef MOTORS_TO_THROTTLE
 		//normal mode
+
+#ifdef THRUST_LINEARISATION
+				// Computationally quite expensive:
+				static float a, a_reci, b, b_sq;
+				extern float aux_analog[];
+				if ( a != AA_motorCurve ) {
+					a = AA_motorCurve;
+					if ( a > 0.0f ) {
+						a_reci = 1 / a;
+						b = ( 1 - a ) / ( 2 * a );
+						b_sq = b * b;
+					}
+				}
+				float test = mix[i];
+				if ( test > 0.0f && a > 0.0f ) {
+					extern float Q_rsqrt( float number );
+					test = 1 / Q_rsqrt( mix[i] * a_reci + b_sq ) - b;
+				}
+				pwm_set( i, test );
+#else
 		pwm_set( i ,motormap( mix[i] ) );
+#endif
+
 		#else
 		// throttle test mode
 		ledcommand = 1;
@@ -871,7 +870,6 @@ thrsum = 0;
 		// no motors mode ( anti-optimization)
 		#warning "NO MOTORS"
 		tempx[i] = motormap( mix[i] );
-		#endif
 		#endif
 		
 		if ( mix[i] < 0 ) mix[i] = 0;
