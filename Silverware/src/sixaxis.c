@@ -106,7 +106,7 @@ extern int hw_i2c_sendheader( int, int );
 void sixaxis_init( void)
 {
 // gyro soft reset
-	
+{	
 	
 	i2c_writereg(  107 , 128);
 	 
@@ -135,6 +135,8 @@ void sixaxis_init( void)
 // Gyro DLPF low pass filter
 
 	i2c_writereg( 26 , GYRO_LOW_PASS_FILTER);
+	
+}
 	
 #ifdef SIXAXIS_READ_DMA	
 	////////////////////////////////////////////////////////////////////////
@@ -368,7 +370,10 @@ float gyro[3];
 float accelcal[3];
 float gyrocal[3];
 
+int calibration_done;
+
 float lpffilter(float in, int num);
+float lpffilter2(float in, int num);
 
 void sixaxis_read(void)
 {
@@ -525,7 +530,19 @@ gyronew[2] = - gyronew[2];
 	  {
 		  gyronew[i] = gyronew[i] * 0.061035156f * 0.017453292f;
 #ifndef SOFT_LPF_NONE
-		  gyro[i] = lpffilter(gyronew[i], i);
+
+		#if defined (GYRO_FILTER_PASS2) && defined (GYRO_FILTER_PASS1)
+			gyro[i] = lpffilter(gyronew[i], i);
+			gyro[i] = lpffilter2(gyro[i], i);
+		#endif
+
+		#if defined (GYRO_FILTER_PASS1) && !defined(GYRO_FILTER_PASS2)
+			gyro[i] = lpffilter(gyronew[i], i);
+		#endif
+
+		#if defined (GYRO_FILTER_PASS2) && !defined(GYRO_FILTER_PASS1)
+			gyro[i] = lpffilter2(gyronew[i], i);
+		#endif
 #else
 		  gyro[i] = gyronew[i];
 #endif
@@ -612,7 +629,19 @@ for (int i = 0; i < 3; i++)
 	  {
 		  gyronew[i] = gyronew[i] * 0.061035156f * 0.017453292f;
 #ifndef SOFT_LPF_NONE
-		  gyro[i] = lpffilter(gyronew[i], i);
+
+		#if defined (GYRO_FILTER_PASS2) && defined (GYRO_FILTER_PASS1)
+			gyro[i] = lpffilter(gyronew[i], i);
+			gyro[i] = lpffilter2(gyro[i], i);
+		#endif
+
+		#if defined (GYRO_FILTER_PASS1) && !defined(GYRO_FILTER_PASS2)
+			gyro[i] = lpffilter(gyronew[i], i);
+		#endif
+
+		#if defined (GYRO_FILTER_PASS2) && !defined(GYRO_FILTER_PASS1)
+			gyro[i] = lpffilter2(gyronew[i], i);
+		#endif
 #else
 		  gyro[i] = gyronew[i];
 #endif
@@ -705,6 +734,8 @@ checkrx();
 			gyrocal[i] = 0;
 		}
 	}
+	
+calibration_done = 1;
 }
 #else  // not using dma
 void gyro_cal(void)
@@ -793,6 +824,7 @@ if ( time - timestart < CAL_TIME )
 
 	}
 }
+	calibration_done = 1;
 }
 #endif
 

@@ -79,9 +79,9 @@
 // #endif
 
 
-#ifdef ENABLE_OVERCLOCK
-#error "Overclock timing not implemented"
-#endif
+//#ifdef ENABLE_OVERCLOCK
+//#error "Overclock timing not implemented"
+//#endif
 
 #ifdef DSHOT150
 #ifdef RX_SBUS
@@ -440,6 +440,12 @@ void bitbang_data()
     #else
             __asm{NOP} __asm{NOP} __asm{NOP} __asm{NOP}
             __asm{NOP} __asm{NOP} __asm{NOP} __asm{NOP}
+#ifdef ENABLE_OVERCLOCK
+            __asm{NOP} __asm{NOP} __asm{NOP} __asm{NOP}
+            __asm{NOP} __asm{NOP} __asm{NOP} __asm{NOP}
+            __asm{NOP} __asm{NOP} __asm{NOP} __asm{NOP}
+            __asm{NOP}
+#endif
     #endif
 
 #ifndef LESS_DELAY

@@ -7,4 +7,4 @@ int decrease_pid( void );
 void pid_precalc( void);
 void rotateErrors(void); 
 
-
+void pid_init( void );

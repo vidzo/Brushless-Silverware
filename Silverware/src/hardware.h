@@ -27,9 +27,7 @@
 
 
 // ------------- FC must have MOSFETS and motor pulldown resistors removed. 
-// ************* Use in conjunction with either USE_ESC_DRIVER or USE_DSHOT_DRIVER_BETA 
-// ************* It is advised to disable #define SIXAXIS_READ_DMA while using passthrough. After ESC calibration
-// ************* undefine Blheli passthrough and define SIXAXIS_READ_DMA
+// ************* Use in conjunction with either USE_ESC_DRIVER or USE_DSHOT_DRIVER_BETA  
 // MAY NOT WORK WITH ALL ESCS
 //#define USE_SERIAL_4WAY_BLHELI_INTERFACE
 
@@ -57,7 +55,7 @@
 #define GYRO_SYNC2 CHAN_OFF
 #define GYRO_SYNC3 CHAN_ON // works only when LEVELMODE off and not onground
 
-// ------------- Select this for External SPI radio.
+// ------------- Select this for SPI radio.
 // ************* Buzzer GPIO may need to be reassigned to another pin
 //#define EXTERNAL_RX
 

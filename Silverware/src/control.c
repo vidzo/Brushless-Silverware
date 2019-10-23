@@ -72,6 +72,8 @@ extern float looptime;
 
 extern char auxchange[AUXNUMBER];
 extern char aux[AUXNUMBER];
+extern float aux_analog[AUXNUMBER];
+extern char aux_analogchange[AUXNUMBER];
 
 extern int ledcommand;
 extern int ledblink;
@@ -105,7 +107,10 @@ void control( void)
 
 // rates / expert mode
 float rate_multiplier = 1.0;
-	
+
+#if (defined USE_ANALOG_AUX && defined ANALOG_RATE_MULT)
+	rate_multiplier = aux_analog[ANALOG_RATE_MULT];
+#else	
 	if ( aux[RATES]  )
 	{		
 		
@@ -115,7 +120,7 @@ float rate_multiplier = 1.0;
 		rate_multiplier = LOW_RATES_MULTI;
 	}
 	// make local copy
-	
+#endif	
 	
 #ifdef INVERTED_ENABLE	
     extern int pwmdir;
@@ -834,8 +839,8 @@ thrsum = 0;
 			mix[i] = (float) MOTOR_MIN_VALUE;
 		}
 		#endif
-		
-	  #ifndef NOMOTORS
+
+		#ifndef NOMOTORS
 		#ifndef MOTORS_TO_THROTTLE
 		//normal mode
 
@@ -871,6 +876,7 @@ thrsum = 0;
 		#warning "NO MOTORS"
 		tempx[i] = motormap( mix[i] );
 		#endif
+		
 		
 		if ( mix[i] < 0 ) mix[i] = 0;
 		if ( mix[i] > 1 ) mix[i] = 1;

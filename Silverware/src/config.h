@@ -21,7 +21,7 @@
 #define MAX_RATE 720.0
 #define MAX_RATEYAW 720.0
 // ************* Max angle for level mode
-#define MAX_ANGLE_HI 70.0f
+#define LEVEL_MAX_ANGLE 70.0f
 // ************* Low rates multiplier if rates are assigned to a channel
 #define LOW_RATES_MULTI 0.5f
 // ************* Max rate used by level pid ( limit )
@@ -36,7 +36,7 @@
 
 // ------------- CHAN_ON - on always ( all protocols)
 // ************* CHAN_OFF - off always ( all protocols)
-// ************* Aux channels are selectable as CHAN_5 through CHAN_10 for DEVO and MULTIMODULE users
+// ************* Aux channels are selectable as CHAN_5 through CHAN_12 for DEVO and through CHAN_13 (but no CHAN_11) for MULTIMODULE users
 // ************* Toy transmitter mapping is CHAN_5 (rates button), CHAN_6 (stick gestures RRD/LLD), 
 // ************* CHAN_7 (headfree button), CHAN_8 (roll trim buttons), CHAN_9 (pitch trim buttons)
 // ************* All Defines for channels can be found in defines.h file
@@ -70,11 +70,42 @@
 //#define IDLE_THR 0.05f
 //#define THROTTLE_SAFETY .10f
 
+// ------------- ANALOG AUX CHANNELS
+// ************* For some protocols, use Tx channels as auxiliary analog values
+// ************* Bayang with analog aux protocol (Tx optional mode enabled in modified Multimodule and DeviationTx) has two analog channels available:
+// ************* Deviation: channels 13 and 14
+// ************* Multimodule: channels 14 and 15
+// Sbus and DSM can use analog values from any channel
+// comment to disable
+//#define USE_ANALOG_AUX
+// Select analog feature for each channel
+// comment to disable
+//#define ANALOG_RATE_MULT CHAN_13
+//#define ANALOG_MAX_ANGLE CHAN_14
+//#define ANALOG_RP_P  CHAN_13 // Adjust Roll and Pitch together
+//#define ANALOG_RP_I  CHAN_13
+//#define ANALOG_RP_D  CHAN_14
+//#define ANALOG_RP_PD CHAN_14 // Adjust Roll and Pitch P & D together
+//#define ANALOG_R_P   CHAN_13 // Adjust Roll only
+//#define ANALOG_R_I   CHAN_13
+//#define ANALOG_R_D   CHAN_14
+//#define ANALOG_P_P   CHAN_13 // Adjust Pitch only
+//#define ANALOG_P_I   CHAN_13
+//#define ANALOG_P_D   CHAN_14
+//#define ANALOG_Y_P   CHAN_13 // Adjust Yaw only
+//#define ANALOG_Y_I   CHAN_13
+//#define ANALOG_Y_D   CHAN_14
+// The following define can always be left uncommented. It just gathers all analog aux PID settings together into one define.
+#if defined USE_ANALOG_AUX && (defined ANALOG_R_P || defined ANALOG_R_I || defined ANALOG_R_D || defined ANALOG_P_P || defined ANALOG_P_I || defined ANALOG_P_D || defined ANALOG_Y_P || defined ANALOG_Y_I || defined ANALOG_Y_D || defined ANALOG_RP_P || defined ANALOG_RP_I || defined ANALOG_RP_D || defined ANALOG_RP_PD)
+    #define ANALOG_AUX_PIDS
+#endif
 
 // ------------- Automatically remove center bias in toy tx ( needs throttle off for 1 second )
 //#define STOCK_TX_AUTOCENTER
 // ************* Start in level mode for toy tx.
 //#define AUX1_START_ON
+
+
 
 
 //**********************************************************************************************************************
@@ -112,6 +143,9 @@
 //#define PID_VOLTAGE_COMPENSATION
 //#define LEVELMODE_PID_ATTENUATION 0.90f
 
+// ------------- Send PID values in the telemetry data.
+//#define DISPLAY_PID_VALUES
+
 
 //**********************************************************************************************************************
 //***********************************************FILTER SETTINGS********************************************************
@@ -124,25 +158,36 @@
 //#define STRONG_FILTERING
 //#define VERY_STRONG_FILTERING
 #define CUSTOM_FILTERING
+//#define BETA_FILTERING
+
+#ifdef BETA_FILTERING  //*** ABOVE 100 ADJUST IN INCRIMENTS OF 20, BELOW 100 ADJUST IN INCRIMENTS OF 10, nothing coded beyond 500hz
+//Select Gyro Filter Type *** Select Only One type
+#define KALMAN_GYRO
+//#define PT1_GYRO
+
+//Select Gyro Filter Cut Frequency
+#define GYRO_FILTER_PASS1 HZ_90
+#define GYRO_FILTER_PASS2 HZ_90
+
+// ------------- D term low pass filter type
+// ************* 
+//Select D Term Filter Cut Frequency *** Select Only one
+#define DTERM_LPF_2ND_HZ 100
+//#define DTERM_LPF_1ST_HZ 70
+#endif
+
 
 
 #ifdef CUSTOM_FILTERING
-// ------------- Gyro low pass filter ( iir )
-// ************* Set only one below - kalman, 1st order, or second order - and adjust frequency
-//************** ABOVE 100 ADJUST IN INCRIMENTS OF 20, BELOW 100 ADJUST IN INCRIMENTS OF 10
+//Select Gyro Filter Type *** Select Only One type *** ABOVE 100 ADJUST IN INCRIMENTS OF 20, BELOW 100 ADJUST IN INCRIMENTS OF 10, nothing coded beyond 500hz
+#define KALMAN_GYRO
+//#define PT1_GYRO
 
-//#define SOFT_KALMAN_GYRO KAL1_HZ_90
-//#define SOFT_LPF_1ST_HZ 80
-//#define SOFT_LPF_2ND_HZ 80
-//#define SOFT_LPF_1ST_023HZ
-//#define SOFT_LPF_1ST_043HZ
-//#define SOFT_LPF_1ST_100HZ
-//#define SOFT_LPF_2ND_043HZ
-//#define SOFT_LPF_2ND_088HZ
-//#define SOFT_LPF_4TH_088HZ
-//#define SOFT_LPF_4TH_160HZ
-//#define SOFT_LPF_4TH_250HZ
-#define SOFT_LPF_NONE
+// ------------- Gyro low pass filter ( iir )
+//Select Gyro Filter Cut Frequency
+#define GYRO_FILTER_PASS1 HZ_90
+#define GYRO_FILTER_PASS2 HZ_90
+//#define SOFT_LPF_NONE
 
 // ------------- Gyro LPF filter frequency
 // gyro filter 0 = 250hz delay 0.97mS
@@ -151,15 +196,11 @@
 // gyro filter 3 = 41hz delay 5.9mS (Default)
 #define GYRO_LOW_PASS_FILTER 0
 
-// ------------- D term low pass filter type - set only one below and adjust frequency if adjustable filter is used
-// ************* 1st order adjustable, second order adjustable, or 3rd order fixed (non adjustable)
-//#define DTERM_LPF_1ST_HZ 100
+// ------------- D term low pass filter type
+// ************* 
+//Select D Term Filter Cut Frequency *** Select Only one
 #define DTERM_LPF_2ND_HZ 100
-//#define DTERM_LPF3_88
-//#define NORMAL_DTERM
-//#define NEW_DTERM
-//#define MAX_FLAT_LPF_DIFF_DTERM
-
+//#define DTERM_LPF_1ST_HZ 70
 #endif
 
 
@@ -170,9 +211,9 @@
 // ------------- Enable motor output filter - select and adjust frequency
 // motorfilter1: hanning 3 sample fir filter
 // motorfilter2: 1st lpf, 0.2 - 0.6 , 0.6 = less filtering
-//#define MOTOR_FILTER2_ALPHA MFILT1_HZ_90
-//#define MOTOR_KAL KAL1_HZ_70
-//#define MOTOR_KAL_2ND KAL1_HZ_90
+#define MOTOR_FILTER2_ALPHA MFILT1_HZ_90
+//#define MOTOR_KAL HZ_70
+//#define MOTOR_KAL_2ND HZ_90
 //#define MOTOR_FILTER
 //#define MOTOR_FILTER2_ALPHA 0.2
 #endif
@@ -287,6 +328,15 @@
 // ************* Only works with bayang_protocol_telemetry, bayang_protocol_telemetry_autobind and nrf24_bayang_telemetry
 //#define ACC_TELEMETRY
 
+// ------------- Accelerometer telemetry which displays max G
+// ************* Code written by Markus Gritsch for Devo z axis logging 
+// ************* The value is displayed in Volt1 telemetry box reception on Devo screen.
+// ************* Only works with bayang_protocol_telemetry, bayang_protocol_telemetry_autobind and nrf24_bayang_telemetry
+// ************* Logging will not work when quad is in air while using #define GYRO_SYNC3. Set to Channel 12 of TX, change
+// ************* channel in respective protocol 
+// ************* Only works with bayang_protocol_telemetry, bayang_protocol_telemetry_autobind and nrf24_bayang_telemetry
+//#define Z_AXIS_LOGGING
+
 
 // ------------- Telemetry option to view CPU load 
 // ************* Allows the viewing of CPU load. Uses VBatt telemetry to display MCU loop time usage. 
@@ -376,23 +426,35 @@
 #endif
 
 #ifdef WEAK_FILTERING
-#define SOFT_KALMAN_GYRO KAL1_HZ_90
+#define KALMAN_GYRO
+#define GYRO_FILTER_PASS1 HZ_90
 #define  DTERM_LPF_2ND_HZ 100
 #define MOTOR_FILTER2_ALPHA MFILT1_HZ_90
 #define GYRO_LOW_PASS_FILTER 0
 #endif
 
 #ifdef STRONG_FILTERING
-#define SOFT_KALMAN_GYRO KAL1_HZ_80
-#define  DTERM_LPF_2ND_HZ 90
+#define KALMAN_GYRO
+#define GYRO_FILTER_PASS1 HZ_80
 #define MOTOR_FILTER2_ALPHA MFILT1_HZ_80
 #define GYRO_LOW_PASS_FILTER 0
 #endif
 
 #ifdef VERY_STRONG_FILTERING
-#define SOFT_KALMAN_GYRO KAL1_HZ_70
-#define  DTERM_LPF_2ND_HZ 80
+#define KALMAN_GYRO
+#define GYRO_FILTER_PASS1 HZ_70
 #define MOTOR_FILTER2_ALPHA MFILT1_HZ_70
 #define GYRO_LOW_PASS_FILTER 0
 #endif
+
+#ifdef BETA_FILTERING
+	#if (!defined(KALMAN_GYRO) && !defined(PT1_GYRO)) || (!defined(GYRO_FILTER_PASS1) && !defined(GYRO_FILTER_PASS2))
+		#define SOFT_LPF_NONE
+	#endif
+#endif
+
+#ifdef BETA_FILTERING
+#define GYRO_LOW_PASS_FILTER 0
+#endif
+
 

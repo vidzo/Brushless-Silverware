@@ -29,6 +29,7 @@ THE SOFTWARE.
 #include "xn297.h"
 #include "drv_time.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include "config.h"
 #include "defines.h"
 
@@ -36,6 +37,9 @@ THE SOFTWARE.
 #include "rx_bayang.h"
 
 #include "util.h"
+
+#include <math.h>
+#include <stdbool.h>
 
 
 #define RX_MODE_NORMAL RXMODE_NORMAL
@@ -66,6 +70,9 @@ extern float rx[4];
 extern char aux[AUXNUMBER];
 extern char lastaux[AUXNUMBER];
 extern char auxchange[AUXNUMBER];
+extern float aux_analog[AUXNUMBER];
+extern float lastaux_analog[AUXNUMBER];
+extern char aux_analogchange[AUXNUMBER];
 
 
 char lasttrim[4];
@@ -325,15 +332,27 @@ void send_telemetry()
     txdata[1] = lowbatt;
 
     int vbatt = vbattfilt * 100;
+	
+#ifdef Z_AXIS_LOGGING
+  extern float accel[3];
+  extern int calibration_done;
+  static float maxg = 0;
+  if (fabsf(accel[2]) > maxg && calibration_done) {
+    maxg = fabsf(accel[2]); // Does not work in flight with GYRO_SYNC3.
+  }
+  if (aux[CH_EMG]) {
+    maxg = 0;
+  }
+if (aux[CH_ON]) {
+  vbatt = maxg * 100;
+}
+#endif
 
 //cpu load watch from JazzMac	
-	extern float cpu_loading;	//add this line
-#if defined(CPU_LOAD_WATCH)
-	if (cpu_loading > 0.95f || aux[CPU_LOAD_WATCH])
-{
-	
-	vbatt = cpu_loading * 100;	//add this line
-}
+	#if defined(CPU_LOAD_WATCH)
+extern float cpu_loading;	//add this line
+ 	vbatt = cpu_loading * 100;	//add this line
+
 #endif
 	
 // battery volt filtered    
@@ -346,6 +365,28 @@ void send_telemetry()
     txdata[6] = vbatt & 0xff;
 
     int temp = packetpersecond / 2;
+		
+#ifdef DISPLAY_PID_VALUES
+	extern float * pids_array[ 3 ];
+	extern int current_pid_axis, current_pid_term;
+	static uint32_t pid_term = 0;
+	const bool blink = ( gettime() & 0xFFFFF ) < 200000; // roughly every second (1048575 µs) for 0.2 s
+	int pid_value;
+	if ( current_pid_term == pid_term && blink ) {
+		pid_value = 0;
+	} else {
+		pid_value = pids_array[ pid_term ][ current_pid_axis ] * 1000 + 0.5f;
+	}
+	txdata[ 8 ] = ( pid_value >> 8 ) & 0x3F;
+	txdata[ 9 ] = pid_value & 0xff;
+	txdata[ 8 ] |= pid_term << 6;
+	++pid_term;
+	if ( pid_term == 3 ) {
+		pid_term = 0;
+	}
+	
+#endif // DISPLAY_PID_VALUES
+		
 	
 #ifdef ACC_TELEMETRY	
   temp = tel1/2;
@@ -382,22 +423,20 @@ void send_telemetry()
 
 static char checkpacket()
 {
-    int status = xn_readreg(7);
+	int status = xn_readreg(7);
 
-    if (status & (1 << MASK_RX_DR))
-      {                         // rx clear bit
-          // this is not working well
-          // xn_writereg( STATUS , (1<<MASK_RX_DR) );
-          //RX packet received
-          //return 1;
-      }
-    if ((status & B00001110) != B00001110)
-      {
-          // rx fifo not empty        
-          return 2;
-      }
+#if 1
+	if ( status & ( 1 << MASK_RX_DR ) ) { // RX packet received
+		xn_writereg( STATUS, ( 1 << MASK_RX_DR ) ); // rx clear bit
+		return 1;
+	}
+#else
+	if ( ( status & B00001110 ) != B00001110 ) { // rx fifo not empty
+		return 2;
+	}
+#endif
 
-    return 0;
+	return 0;
 }
 
 
@@ -407,6 +446,12 @@ int rxdata[15];
 float packettodata(int *data)
 {
     return (((data[0] & 0x0003) * 256 + data[1]) - 512) * 0.001953125;
+}
+
+float bytetodata(int byte)
+{
+    //return (byte - 128) * 0.0078125; // -1 to 1
+    return byte * 0.00390625; // 0 to 1
 }
 
 
@@ -456,12 +501,31 @@ static int decodepacket(void)
                 aux[CH_EMG] = (rxdata[3] & 0x04) ? 1 : 0;   // emg stop flag
                       
                 aux[CH_FLIP] = (rxdata[2] & 0x08) ? 1 : 0;
-
+#ifdef USE_ANALOG_AUX
+                aux[CH_EXPERT] = (rxdata[1] > 0x7F) ? 1 : 0;
+#else
                 aux[CH_EXPERT] = (rxdata[1] == 0xfa) ? 1 : 0;
-
+#endif
                 aux[CH_HEADFREE] = (rxdata[2] & 0x02) ? 1 : 0;
 
                 aux[CH_RTH] = (rxdata[2] & 0x01) ? 1 : 0;   // rth channel
+#ifdef USE_ANALOG_AUX
+                // Assign all analog versions of channels based on boolean channel data
+                for (int i = 0; i < AUXNUMBER - 2; i++)
+                {
+                  if (i == CH_ANA_AUX1)
+                    aux_analog[CH_ANA_AUX1] = bytetodata(rxdata[1]);
+                  else if (i == CH_ANA_AUX2)
+                    aux_analog[CH_ANA_AUX2] = bytetodata(rxdata[13]);
+                  else
+                    aux_analog[i] = aux[i] ? 1.0 : 0.0;
+                  aux_analogchange[i] = 0;
+                  if (lastaux_analog[i] != aux_analog[i])
+                    aux_analogchange[i] = 1;
+                  lastaux_analog[i] = aux_analog[i];
+                }
+
+#endif
 
 							if (aux[LEVELMODE]){
 								if (aux[RACEMODE] && !aux[HORIZON]){
@@ -511,7 +575,7 @@ unsigned long lastrxtime;
 unsigned long failsafetime;
 unsigned long secondtimer;
 
-int failsafe = 0;
+int failsafe = 1;
 
 
 unsigned int skipchannel = 0;
@@ -530,10 +594,15 @@ void checkrx(void)
           if (rxmode == RX_MODE_BIND)
             {                   // rx startup , bind mode
                 xn_readpayload(rxdata, 15);
-
+#ifdef USE_ANALOG_AUX
+                if (rxdata[0] == 0xa2 || rxdata[0] == 0xa1)
+                {  // bind packet
+                        if (rxdata[0] == 0xa1)
+#else
                 if (rxdata[0] == 0xa4 || rxdata[0] == 0xa3)
-                  {             // bind packet
-                      if (rxdata[0] == 0xa3)
+                {  // bind packet
+                        if (rxdata[0] == 0xa3)
+#endif
                         {
                             telemetry_enabled = 1;
                             packet_period = PACKET_PERIOD_TELEMETRY;

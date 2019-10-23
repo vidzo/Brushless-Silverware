@@ -63,7 +63,7 @@ THE SOFTWARE.
 #endif									   
 						   
 						   
-#if defined (__GNUC__)&& !( defined (SOFT_LPF_NONE) || defined (SOFT_LPF_1ST_HZ) || defined (SOFT_LPF_2ND_HZ) )
+#if defined (__GNUC__)&& !( defined (SOFT_LPF_NONE) || defined (GYRO_FILTER_PASS1) || defined (GYRO_FILTER_PASS2) )
 #warning the soft lpf may not work correctly with gcc due to longer loop time
 #endif
 
@@ -111,6 +111,11 @@ char aux[AUXNUMBER] = { 0 ,0 ,0 , 0 , 0 , 0};
 char lastaux[AUXNUMBER];
 // if an aux channel has just changed
 char auxchange[AUXNUMBER];
+// analog version of each aux channel
+float aux_analog[AUXNUMBER];
+float lastaux_analog[AUXNUMBER];
+// if an analog aux channel has just changed
+char aux_analogchange[AUXNUMBER];
 
 // bind / normal rx mode
 extern int rxmode;
@@ -149,6 +154,9 @@ int main(void)
 #ifdef ENABLE_OVERCLOCK
 clk_init();
 #endif
+
+
+
 	
   gpio_init();	
   ledon(255);	
@@ -202,7 +210,14 @@ aux[CH_AUX1] = 1;
 // load flash saved variables
     flash_load( );
 #endif
-    	
+
+#ifdef USE_ANALOG_AUX
+  // saves initial pid values - after flash loading
+  pid_init();
+#endif
+
+	
+	
 	rx_init();
 
 	
@@ -516,6 +531,10 @@ rgb_dma_start();
 			pidkp[1]=pidkp2[1];pidki[1]=pidki2[1];pidkd[1]=pidkd2[1];
 			pidkp[2]=pidkp2[2];pidki[2]=pidki2[2];pidkd[2]=pidkd2[2];
 	}
+ #ifdef ANALOG_AUX_PIDS
+	if (auxchange[PID_SET_CHANGE])
+			pid_init(); // Update saved PIDS on PID selection change
+ #endif
 #endif
 #ifndef ENABLE_DUAL_PIDS
 	extern float pidkp[];
