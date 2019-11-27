@@ -248,7 +248,7 @@ static uint8_t regs_1e[4] = { 0x3e , 0xf6 , 0x37 , 0x5d };
 writeregs( regs_1e , sizeof(regs_1e) );
 
 
-#define XN_POWER B00000001|((TX_POWER&7)<<3)
+#define XN_POWER B00000001|((TX_POWER&7)<<1)
 		
 #define XN_TO_RX B10001111
 #define XN_TO_TX B10000010

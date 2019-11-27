@@ -7,7 +7,6 @@
 
 // ------------- Radio protocol selection
 // ************* Select only one
-//#define RX_BAYANG_PROTOCOL_TELEMETRY
 #define RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
 //#define RX_BAYANG_BLE_APP
 //#define RX_NRF24_BAYANG_TELEMETRY
