@@ -11,6 +11,7 @@
 //#define RX_BAYANG_BLE_APP
 //#define RX_NRF24_BAYANG_TELEMETRY
 //#define RX_SBUS                              // Optional define EXTERNAL_RX in hardware.c
+//#define RX_IBUS                              // Define EXTERNAL_RX in hardware.c
 //#define RX_CRSF                              // Define EXTERNAL_RX in hardware.c - Requires tbs firmware v2.88 or newer for failsafe to operate properly
 //#define RX_SUMD                              // Define EXTERNAL_RX in hardware.c
 //#define RX_DSMX_2048                         // Define EXTERNAL_RX in hardware.c

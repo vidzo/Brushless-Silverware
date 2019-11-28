@@ -537,6 +537,16 @@
               <FilePath>.\src\rx_h7_protocol.c</FilePath>
             </File>
             <File>
+              <FileName>rx_ibus.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\rx_ibus.c</FilePath>
+            </File>
+            <File>
+              <FileName>rx_sbus.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\rx_sbus.c</FilePath>
+            </File>
+            <File>
               <FileName>rx_sumd.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\rx_sumd.c</FilePath>
@@ -550,11 +560,6 @@
               <FileName>rx_cx10blue_protocol.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\rx_cx10blue_protocol.c</FilePath>
-            </File>
-            <File>
-              <FileName>rx_sbus.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\rx_sbus.c</FilePath>
             </File>
             <File>
               <FileName>led.c</FileName>
