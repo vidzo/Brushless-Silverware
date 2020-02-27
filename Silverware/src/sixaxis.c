@@ -43,7 +43,7 @@ THE SOFTWARE.
 
 // this works only on newer boards (non mpu-6050)
 // on older boards the hw gyro setting controls the acc as well
-#define ACC_LOW_PASS_FILTER		5
+#define ACC_LOW_PASS_FILTER 5
 #define TICK1US								(SYS_CLOCK_FREQ_HZ*1e-6f)
 
 #ifdef SIXAXIS_READ_DMA
@@ -264,7 +264,7 @@ void DMA1_Channel2_3_IRQHandler(void)
 
 	// if onground, gyro is steady and often the same, sync will fail and the time will be limited at boundary
 	// if GYRO_SYNC off, TIM17 + read 14bytes one time in a loop	
-	if( !aux[GYRO_SYNC1] && !aux[GYRO_SYNC2] && (aux[LEVELMODE] || aux[RACEMODE] || aux[HORIZON] || !aux[GYRO_SYNC3] || onground) ) {			
+	if( !aux[GYRO_SYNC1] && !aux[GYRO_SYNC2] && (aux[LEVELMODE] || !aux[GYRO_SYNC3] || onground) ) {			
 		for( int i=0;i<14;i++ ) 
 			i2c_rx_buffer_dma2[i] = i2c_rx_buffer_dma1[i];
 		
@@ -326,7 +326,7 @@ void TIM17_IRQHandler(void)
 	// trigger I2C DMA
 	DMA_ClearFlag( DMA1_FLAG_GL3 );
 	
-	if( (!aux[LEVELMODE] || aux[RACEMODE] || aux[HORIZON])  && (aux[GYRO_SYNC3] && !onground)  ) {
+	if( !aux[LEVELMODE] && (aux[GYRO_SYNC3] && !onground)  ) {
 		DMA1_Channel3->CMAR = (uint32_t)(i2c_rx_buffer_dma1+8);
 		DMA1_Channel3->CNDTR = 6;
 		hw_i2c_sendheader( 67 , 1 );
@@ -366,6 +366,7 @@ int sixaxis_check( void)
 
 float accel[3];
 float gyro[3];
+float gyro_unfiltered[3];
 
 float accelcal[3];
 float gyrocal[3];
@@ -546,6 +547,7 @@ gyronew[2] = - gyronew[2];
 #else
 		  gyro[i] = gyronew[i];
 #endif
+		  gyro_unfiltered[i] = gyronew[i];
 	  }
 }
 	
@@ -645,6 +647,7 @@ for (int i = 0; i < 3; i++)
 #else
 		  gyro[i] = gyronew[i];
 #endif
+		  gyro_unfiltered[i] = gyronew[i];		
 	  }
 
 }
@@ -811,6 +814,10 @@ brightness&=0xF;
 					lpf( &gyrocal[i] , gyro[i], lpfcalc( (float) looptime , 0.5 * 1e6) );
 					}
 			}
+			
+// receiver function
+void checkrx( void);
+checkrx();
 
 while ( (gettime() - time) < 1000 ) delay(10); 				
 time = gettime();
