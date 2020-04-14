@@ -31,8 +31,8 @@
 // timing: 300 - 78uS bitbang
 // timing: 150 - 150uS bitbang
 
-#define DSHOT600
-//#define DSHOT300
+//#define DSHOT600
+#define DSHOT300
 //#define DSHOT150
 
 
@@ -160,7 +160,7 @@ void pwm_init()
 
 	pwmdir = FORWARD;
 }
-
+int idle_offset = IDLE_OFFSET;
 void pwm_set( uint8_t number, float pwm )
 {
     // if ( number > 3 ) failloop(5);

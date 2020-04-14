@@ -34,8 +34,8 @@
 // Select Dshot150 or Dshot300. Dshot150 consumes quite some main loop time.
 // DShot300 may require removing the input filter cap on the ESC:
 
-#define DSHOT600
-//#define DSHOT300
+//#define DSHOT600
+#define DSHOT300
 //#define DSHOT150
 
 
@@ -401,6 +401,7 @@ void dshot_dma_start()
 	dshot_dma_portA();
 }
 
+int idle_offset = IDLE_OFFSET;
 void pwm_set( uint8_t number, float pwm )
 {
     // if ( number > 3 ) failloop(5);
