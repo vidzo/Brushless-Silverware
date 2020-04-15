@@ -455,6 +455,12 @@
 	#endif
 #endif
 
+#ifdef CUSTOM_FILTERING
+	#if (!defined(KALMAN_GYRO) && !defined(PT1_GYRO)) || (!defined(GYRO_FILTER_PASS1) && !defined(GYRO_FILTER_PASS2))
+		#define SOFT_LPF_NONE
+	#endif
+#endif
+
 #ifdef BETA_FILTERING
 #define GYRO_LOW_PASS_FILTER 0
 #endif
