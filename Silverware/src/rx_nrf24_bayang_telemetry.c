@@ -408,8 +408,9 @@ extern float cpu_loading;	//add this line
 
     int temp = packetpersecond / 2;
 		
-	#ifdef DISPLAY_PID_VALUES
+#ifdef DISPLAY_PID_VALUES
 	extern float * pids_array[ 3 ];
+	extern float * pids_array2[ 3 ];
 	extern int current_pid_axis, current_pid_term;
 	static uint32_t pid_term = 0;
 	const bool blink = ( gettime() & 0xFFFFF ) < 200000; // roughly every second (1048575 µs) for 0.2 s
@@ -417,7 +418,14 @@ extern float cpu_loading;	//add this line
 	if ( current_pid_term == pid_term && blink ) {
 		pid_value = 0;
 	} else {
+#ifdef ENABLE_DUAL_PIDS
+		if (!aux[PID_SET_CHANGE])
 		pid_value = pids_array[ pid_term ][ current_pid_axis ] * 1000 + 0.5f;
+		else
+		pid_value = pids_array2[ pid_term ][ current_pid_axis ] * 1000 + 0.5f;
+#else
+		pid_value = pids_array[ pid_term ][ current_pid_axis ] * 1000 + 0.5f;		
+#endif
 	}
 	txdata[ 8 ] = ( pid_value >> 8 ) & 0x3F;
 	txdata[ 9 ] = pid_value & 0xff;
@@ -426,6 +434,7 @@ extern float cpu_loading;	//add this line
 	if ( pid_term == 3 ) {
 		pid_term = 0;
 	}
+	
 #endif // DISPLAY_PID_VALUES
 
 	

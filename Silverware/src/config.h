@@ -143,7 +143,7 @@
 //#define PID_VOLTAGE_COMPENSATION
 //#define LEVELMODE_PID_ATTENUATION 0.90f
 
-// ------------- Send PID values in the telemetry data.
+// ------------- Send PID values in the telemetry data on Deviation based transmitters.
 //#define DISPLAY_PID_VALUES
 
 
@@ -243,6 +243,7 @@
 //#define MIX_INCREASE_THROTTLE
 
 //#define MIX_LOWER_THROTTLE_3
+//#define MIX_THROTTLE_REDUCTION_MAX 0.1f
 //#define MIX_INCREASE_THROTTLE_3
 //#define MIX_THROTTLE_INCREASE_MAX 0.2f
 

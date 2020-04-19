@@ -381,7 +381,7 @@ if (aux[LEVELMODE]&&!acro_override){
 	}
 
 	#ifdef THRUST_LINEARISATION
-#define AA_motorCurve 0.5f // 0 .. linear, 1 .. quadratic
+#define AA_motorCurve 0.33f // 0 .. linear, 1 .. quadratic
 	const float aa = AA_motorCurve;
 	throttle = throttle * ( throttle * aa + 1 - aa ); // invert the motor curve correction applied further below
 #endif
