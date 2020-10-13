@@ -160,8 +160,9 @@
 //#define BETA_FILTERING
 #define CUSTOM_FILTERING
 
-#ifdef BETA_FILTERING  //*** ABOVE 100 ADJUST IN INCRIMENTS OF 20, BELOW 100 ADJUST IN INCRIMENTS OF 10, nothing coded beyond 500hz
-//Select Gyro Filter Type *** Select Only One type
+#ifdef BETA_FILTERING  
+//*** ABOVE 100 ADJUST IN INCRIMENTS OF 20, BELOW 100 ADJUST IN INCRIMENTS OF 10, nothing coded beyond 500hz
+// ************* Select Gyro Filter Type *** Select Only One type
 #define KALMAN_GYRO
 //#define PT1_GYRO
 
@@ -179,7 +180,8 @@
 
 
 #ifdef CUSTOM_FILTERING
-//Select Gyro Filter Type *** Select Only One type *** ABOVE 100 ADJUST IN INCRIMENTS OF 20, BELOW 100 ADJUST IN INCRIMENTS OF 10, nothing coded beyond 500hz
+// *** ABOVE 100 ADJUST IN INCRIMENTS OF 20, BELOW 100 ADJUST IN INCRIMENTS OF 10, nothing coded beyond 500hz
+// ************* Select Gyro Filter Type *** Select Only One type
 #define KALMAN_GYRO
 //#define PT1_GYRO
 
@@ -189,12 +191,11 @@
 #define GYRO_FILTER_PASS2 HZ_90
 //#define SOFT_LPF_NONE
 
-// ------------- Gyro LPF filter frequency
-// gyro filter 0 = 250hz delay 0.97mS
-// gyro filter 1 = 184hz delay 2.9mS
-// gyro filter 2 = 92hz delay 3.9mS
-// gyro filter 3 = 41hz delay 5.9mS (Default)
-#define GYRO_LOW_PASS_FILTER 0
+// ------------- Notch Filter
+//Static notch filter
+//#define SOFT_BIQUAD_NOTCH_HZ 260
+//#define SOFT_BIQUAD_NOTCH_Q 6
+
 
 // ------------- D term low pass filter type
 // ************* 
@@ -210,6 +211,14 @@
 //#define MOTOR_KAL_2ND HZ_90
 //#define MOTOR_FILTER
 //#define MOTOR_FILTER2_ALPHA 0.2
+
+// ------------- Gyro LPF filter frequency
+// gyro filter 0 = 250hz delay 0.97mS
+// gyro filter 1 = 184hz delay 2.9mS
+// gyro filter 2 = 92hz delay 3.9mS
+// gyro filter 3 = 41hz delay 5.9mS (Default)
+#define GYRO_LOW_PASS_FILTER 0
+
 #endif
 
 

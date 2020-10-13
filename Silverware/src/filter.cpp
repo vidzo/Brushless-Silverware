@@ -1,6 +1,11 @@
-
+#include <math.h> // fabsf
 #include "config.h"
 #include "defines.h"
+
+extern float aux[];
+extern float aux_analog[];
+extern float rxcopy[];
+extern float gyro[];
 
 #ifdef KALMAN_GYRO
 // kalman Q/R ratio for Q = 0.02
@@ -234,10 +239,74 @@ class  filter_kalman2
 filter_kalman2 filter2[3];       
 #endif
 
+#ifdef SOFT_BIQUAD_NOTCH_HZ
+extern "C" float fastsin( float x );
+extern "C" float fastcos( float x );
 
+static float b0, b1, b2, a0, a1, a2;
+
+extern "C" void notch_init( float filter_f, float Q )
+{
+
+ // setup variables
+    const float omega = 2.0f * 3.1416f * filter_f * 0.001f;
+    const float sn = fastsin(omega);
+    const float cs = fastcos(omega);
+    const float alpha = sn / (2.0f * Q);
+
+    b0 =  1;
+    b1 = -2 * cs;
+    b2 =  1;
+    a0 =  1 + alpha;
+    a1 = -2 * cs;
+    a2 =  1 - alpha;
+
+    // precompute the coefficients
+    b0 /= a0;
+    b1 /= a0;
+    b2 /= a0;
+    a1 /= a0;
+    a2 /= a0;
+}
+
+extern "C" float notch_filter( float input, int num )
+{
+	static float notch_hz, notch_q;
+	if ( notch_hz != SOFT_BIQUAD_NOTCH_HZ || notch_q != SOFT_BIQUAD_NOTCH_Q ) {
+		notch_hz = SOFT_BIQUAD_NOTCH_HZ;
+		notch_q = SOFT_BIQUAD_NOTCH_Q;
+		notch_init( notch_hz, notch_q );
+	}
+	static float x1[ 3 ], x2[ 3 ];
+#if 1
+	static float y1[ 3 ], y2[ 3 ];
+	// Direct Form I
+	const float result = b0 * input + b1 * x1[ num ] + b2 * x2[ num ] - a1 * y1[ num ] - a2 * y2[ num ];
+	x2[ num ] = x1[ num ];
+	x1[ num ] = input;
+	y2[ num ] = y1[ num ];
+	y1[ num ] = result;
+	return result;
+#else
+	// Direct Form II
+    const float result = b0 * input + x1[num];
+    x1[num] = b1 * input - a1 * result + x2[num];
+    x2[num] = b2 * input - a2 * result;
+    return result;
+#endif
+}
+#endif
 
 extern "C" float lpffilter( float in,int num )
 {
+#if defined SOFT_BIQUAD_NOTCH_HZ && defined GYRO_FILTER_PASS1
+	return notch_filter( in, num ), filter[num].step(in );
+#else	
+
+#ifdef SOFT_BIQUAD_NOTCH_HZ
+	return notch_filter( in, num );
+#else
+	
 #ifdef SOFT_LPF1_NONE
 	return in;
 	#else
@@ -248,7 +317,9 @@ extern "C" float lpffilter( float in,int num )
     
 	      return filter[num].step(in );   
 	      #endif
+	#endif
 	
+	#endif
 }
 
 

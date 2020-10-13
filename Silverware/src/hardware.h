@@ -20,8 +20,8 @@
 
 // ------------- ESC driver = servo type signal for brushless esc
 // ************* Dshot driver = esc signal from gate of FET only
-#define USE_DSHOT_DMA_DRIVER // JazzMac
-//#define USE_DSHOT_DMA_MV_DRIVER // mrvanes
+//#define USE_DSHOT_DMA_DRIVER // JazzMac
+#define USE_DSHOT_DMA_MV_DRIVER // mrvanes
 //#define USE_DSHOT_DRIVER_BETA // Markus Gritsch
 //#define USE_ESC_DRIVER
 
@@ -49,9 +49,9 @@
 // ------------- Select only one for faster gyro read. Uncomment all for standard gyro (may help with Blheli passthrough)
 //Must use HARDWARE_I2C (predefined). HW_1_3 for GYRO_LOW_PASS_FILTER 1-3, OVERSAMPLING for GYRO_LOW_PASS_FILTER 0, MULTI for 
 //all GYRO_LOW_PASS_FILTER types
-#define SIXAXIS_READ_DMA_OVERSAMPLING //JazzMac
+//#define SIXAXIS_READ_DMA_OVERSAMPLING //JazzMac
 //#define SIXAXIS_READ_DMA_HW_1_3 // JazzMac
-//#define SIXAXIS_READ_DMA_MULTI // mrvanes
+#define SIXAXIS_READ_DMA_MULTI // mrvanes
 
 // ************* Sixaxis DMA BETA Gyro sync for SIXAXIS_READ_DMA_HW_1_3 and SIXAXIS_READ_DMA_OVERSAMPLING. 
 //Define channels to compare the sync in flight
