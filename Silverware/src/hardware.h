@@ -20,14 +20,16 @@
 
 // ------------- ESC driver = servo type signal for brushless esc
 // ************* Dshot driver = esc signal from gate of FET only
-#define USE_DSHOT_DMA_DRIVER
-//#define USE_DSHOT_DRIVER_BETA
+#define USE_DSHOT_DMA_DRIVER // JazzMac
+//#define USE_DSHOT_DMA_MV_DRIVER // mrvanes
+//#define USE_DSHOT_DRIVER_BETA // Markus Gritsch
 //#define USE_ESC_DRIVER
 
 
 
-// ------------- FC must have MOSFETS and motor pulldown resistors removed. 
-// ************* Use in conjunction with either USE_ESC_DRIVER or USE_DSHOT_DRIVER_BETA  
+
+// ------------- BLHeli Passthrough for connecting to ESCS without desoldering FC. FC must have MOSFETS and motor pulldown 
+// ************* resistors removed. Use in conjunction with either USE_ESC_DRIVER, USE_DSHOT_DRIVER_BETA and USE_DSHOT_DMA_RGB_DRIVER
 // MAY NOT WORK WITH ALL ESCS
 //#define USE_SERIAL_4WAY_BLHELI_INTERFACE
 
@@ -35,25 +37,34 @@
 //*******************************************MOTOR PINS SELECTION*******************************************************
 
 // ------------- Assingment of pin to motor to processor pin
-// back-left motor ( motor 0 )
-#define MOTOR0_PIN_PB1
-// front-left motor ( motor 1 )
-#define MOTOR1_PIN_PA4
-// back-right motor ( motor 2 )
-#define MOTOR2_PIN_PA6
-// front-right motor ( motor 3 )
-#define MOTOR3_PIN_PA7
+#define MOTOR0_PIN_PB1 // back-left motor ( motor 0 )
+#define MOTOR1_PIN_PA4 // front-left motor ( motor 1 )
+#define MOTOR2_PIN_PA6 // back-right motor ( motor 2 )
+#define MOTOR3_PIN_PA7 // front-right motor ( motor 3 )
 
 
 //**********************************************************************************************************************
 //*****************************************HARDWARE SETTINGS************************************************************
 
-// ------------- Select this for faster gyro read. Must use HARDWARE_I2C
-#define SIXAXIS_READ_DMA
-// ************* Sixaxis DMA BETA. Define channels to compare the sync
+// ------------- Select only one for faster gyro read. Uncomment all for standard gyro (may help with Blheli passthrough)
+//Must use HARDWARE_I2C (predefined). HW_1_3 for GYRO_LOW_PASS_FILTER 1-3, OVERSAMPLING for GYRO_LOW_PASS_FILTER 0, MULTI for 
+//all GYRO_LOW_PASS_FILTER types
+#define SIXAXIS_READ_DMA_OVERSAMPLING //JazzMac
+//#define SIXAXIS_READ_DMA_HW_1_3 // JazzMac
+//#define SIXAXIS_READ_DMA_MULTI // mrvanes
+
+// ************* Sixaxis DMA BETA Gyro sync for SIXAXIS_READ_DMA_HW_1_3 and SIXAXIS_READ_DMA_OVERSAMPLING. 
+//Define channels to compare the sync in flight
+#ifdef SIXAXIS_READ_DMA_HW_1_3
 #define GYRO_SYNC1 CHAN_OFF
 #define GYRO_SYNC2 CHAN_OFF
 #define GYRO_SYNC3 CHAN_ON // works only when LEVELMODE off and not onground
+#endif
+
+#ifdef SIXAXIS_READ_DMA_OVERSAMPLING // Keep to OFF as failloop may occur
+#define GYRO_SYNC CHAN_OFF
+#endif
+
 
 // ------------- Select this for SPI radio.
 // ************* Buzzer GPIO may need to be reassigned to another pin
@@ -322,9 +333,14 @@
 //#define RADIO_XN297
 //#define RADIO_XN297L
 
-#ifdef SIXAXIS_READ_DMA
+#if ( defined (SIXAXIS_READ_DMA_HW_1_3) || defined (SIXAXIS_READ_DMA_OVERSAMPLING) || defined (SIXAXIS_READ_DMA_MULTI) )
 #define USE_HARDWARE_I2C 
 #undef USE_SOFTWARE_I2C
+#define SIXAXIS_READ_DMA
+#endif
+
+#if ( !defined (SIXAXIS_READ_DMA_HW_1_3) && !defined (SIXAXIS_READ_DMA_OVERSAMPLING) && !defined (SIXAXIS_READ_DMA_MULTI))
+#define SIXAXIS_READ_DMA_HW_1_3
 #endif
 
 #define PWM_PA4

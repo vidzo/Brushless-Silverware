@@ -190,11 +190,12 @@ void imu_calc(void)
           }
 	  }
 
-
+#ifdef DEBUG
 	attitude[0] = atan2approx(GEstG[0], GEstG[2]) ;
 
 	attitude[1] = atan2approx(GEstG[1], GEstG[2])  ;
-
+#endif
+		
 }
 
 

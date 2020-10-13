@@ -53,13 +53,13 @@
 
 // ------------- EXPO from 0.00 to 1.00 , 0 = no exp
 // ************* Positive = less sensitive near center 
-#define ACRO_EXPO_ROLL 0.80
-#define ACRO_EXPO_PITCH 0.80
-#define ACRO_EXPO_YAW 0.60
+#define ACRO_EXPO_ROLL 0.00
+#define ACRO_EXPO_PITCH 0.00
+#define ACRO_EXPO_YAW 0.00
 
-#define ANGLE_EXPO_ROLL 0.35
-#define ANGLE_EXPO_PITCH 0.0
-#define ANGLE_EXPO_YAW 0.35
+#define ANGLE_EXPO_ROLL 0.00
+#define ANGLE_EXPO_PITCH 0.00
+#define ANGLE_EXPO_YAW 0.00
 
 // ------------- Idle up-Arm switch
 // ************* idle up will behave like betaflight airmode, comment out to disable. 
@@ -157,8 +157,8 @@
 //#define WEAK_FILTERING
 //#define STRONG_FILTERING
 //#define VERY_STRONG_FILTERING
-#define CUSTOM_FILTERING
 //#define BETA_FILTERING
+#define CUSTOM_FILTERING
 
 #ifdef BETA_FILTERING  //*** ABOVE 100 ADJUST IN INCRIMENTS OF 20, BELOW 100 ADJUST IN INCRIMENTS OF 10, nothing coded beyond 500hz
 //Select Gyro Filter Type *** Select Only One type
@@ -201,13 +201,7 @@
 //Select D Term Filter Cut Frequency *** Select Only one
 #define DTERM_LPF_2ND_HZ 100
 //#define DTERM_LPF_1ST_HZ 70
-#endif
 
-
-//**********************************************************************************************************************
-//***********************************************MOTOR OUTPUT SETTINGS**************************************************
-
-#ifdef CUSTOM_FILTERING
 // ------------- Enable motor output filter - select and adjust frequency
 // motorfilter1: hanning 3 sample fir filter
 // motorfilter2: 1st lpf, 0.2 - 0.6 , 0.6 = less filtering
@@ -218,6 +212,9 @@
 //#define MOTOR_FILTER2_ALPHA 0.2
 #endif
 
+
+//**********************************************************************************************************************
+//***********************************************MOTOR OUTPUT SETTINGS**************************************************
 
 // ------------- Clip feedforward attempts to resolve issues that occur near full throttle
 //#define CLIP_FF
@@ -404,7 +401,7 @@
 #define ENABLESTIX_TIMEOUT 1e6
 
 // ------------- Overclock to 64Mhz
-//#define ENABLE_OVERCLOCK
+#define ENABLE_OVERCLOCK
 
 #define PWMFREQ 32000
 #define MOTOR_CURVE_NONE
@@ -450,13 +447,14 @@
 #define GYRO_LOW_PASS_FILTER 0
 #endif
 
-#ifdef BETA_FILTERING
+
+#ifdef CUSTOM_FILTERING
 	#if (!defined(KALMAN_GYRO) && !defined(PT1_GYRO)) || (!defined(GYRO_FILTER_PASS1) && !defined(GYRO_FILTER_PASS2))
 		#define SOFT_LPF_NONE
 	#endif
 #endif
 
-#ifdef CUSTOM_FILTERING
+#ifdef BETA_FILTERING
 	#if (!defined(KALMAN_GYRO) && !defined(PT1_GYRO)) || (!defined(GYRO_FILTER_PASS1) && !defined(GYRO_FILTER_PASS2))
 		#define SOFT_LPF_NONE
 	#endif
@@ -466,4 +464,7 @@
 #define GYRO_LOW_PASS_FILTER 0
 #endif
 
+#ifdef SIXAXIS_READ_DMA_OVERSAMPLING
+#define OVERSAMPLING 1
+#endif
 
